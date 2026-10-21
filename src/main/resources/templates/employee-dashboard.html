@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Employee Dashboard | Project Management System</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #263247;
+        }
+
+        .navbar {
+            background: #172554;
+            color: white;
+            padding: 20px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .navbar h2 {
+            font-size: 22px;
+        }
+
+        .navbar p {
+            font-size: 13px;
+            margin-top: 5px;
+            color: #cbd5e1;
+        }
+
+        .logout {
+            background: #dc2626;
+            color: white;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .logout:hover {
+            background: #b91c1c;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .welcome h1 {
+            font-size: 28px;
+            color: #172554;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .message {
+            background: #fff7ed;
+            color: #9a3412;
+            border: 1px solid #fed7aa;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06);
+            border-left: 5px solid #2563eb;
+        }
+
+        .stat-card h3 {
+            color: #64748b;
+            font-size: 14px;
+            font-weight: normal;
+            margin-bottom: 12px;
+        }
+
+        .stat-card p {
+            font-size: 30px;
+            font-weight: bold;
+            color: #172554;
+        }
+
+        .section {
+            background: white;
+            padding: 24px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06);
+        }
+
+        .section h2 {
+            color: #172554;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            max-width: 400px;
+            height: 300px;
+            margin: 0 auto;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 750px;
+        }
+
+        th, td {
+            padding: 13px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        th {
+            background: #eff4ff;
+            color: #172554;
+            font-weight: bold;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-progress {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .status-completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .priority {
+            font-weight: bold;
+        }
+
+        .priority-high {
+            color: #dc2626;
+        }
+
+        .priority-medium {
+            color: #d97706;
+        }
+
+        .priority-low {
+            color: #16a34a;
+        }
+
+        .status-form {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 260px;
+        }
+
+        select {
+            padding: 9px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            background: white;
+            color: #263247;
+        }
+
+        .update-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 13px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .update-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .empty {
+            text-align: center;
+            color: #64748b;
+            padding: 25px;
+        }
+
+        .footer {
+            text-align: center;
+            color: #64748b;
+            padding: 20px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 850px) {
+            .stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 500px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                padding: 18px;
+            }
+
+            .container {
+                padding: 0 12px;
+            }
+
+            .section {
+                padding: 16px;
+            }
+
+            .welcome h1 {
+                font-size: 23px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="navbar">
+    <div>
+        <h2>Project Management System</h2>
+        <p>Employee Workspace</p>
+    </div>
+
+    <a class="logout"
+       th:href="@{/logout}"
+       onclick="return confirm('Are you sure you want to log out?');">
+        Logout
+    </a>
+</header>
+
+<main class="container">
+
+    <div class="welcome">
+        <h1>
+            Welcome,
+            <span th:text="${employee != null and employee.fullName != null
+                ? employee.fullName : 'Employee'}">Employee</span>!
+        </h1>
+        <p>View your assigned tasks, track your progress, and update task status.</p>
+    </div>
+
+    <div class="message" th:if="${error != null}" th:text="${error}">
+        Account information message
+    </div>
+
+    <!-- TASK SUMMARY -->
+    <div class="stats">
+        <div class="stat-card">
+            <h3>Total Assigned Tasks</h3>
+            <p th:text="${totalTasks != null ? totalTasks : 0}">0</p>
+        </div>
+
+        <div class="stat-card" style="border-left-color: #16a34a;">
+            <h3>Completed Tasks</h3>
+            <p th:text="${completedCount != null ? completedCount : 0}">0</p>
+        </div>
+
+        <div class="stat-card" style="border-left-color: #2563eb;">
+            <h3>In Progress</h3>
+            <p th:text="${inProgressCount != null ? inProgressCount : 0}">0</p>
+        </div>
+
+        <div class="stat-card" style="border-left-color: #d97706;">
+            <h3>Pending Tasks</h3>
+            <p th:text="${pendingCount != null ? pendingCount : 0}">0</p>
+        </div>
+    </div>
+
+    <!-- TASK STATUS PIE CHART -->
+    <section class="section">
+        <h2>My Task Progress</h2>
+
+        <div class="chart-container">
+            <canvas id="taskChart"></canvas>
+        </div>
+    </section>
+
+    <!-- ASSIGNED TASK DETAILS -->
+    <section class="section">
+        <h2>My Assigned Tasks</h2>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Task Title</th>
+                    <th>Description</th>
+                    <th>Project</th>
+                    <th>Priority</th>
+                    <th>Deadline</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="task : ${tasks}">
+                    <td th:text="${task.id}">1</td>
+
+                    <td th:text="${task.title}">Task title</td>
+
+                    <td th:text="${task.description != null
+                        and !task.description.isBlank()
+                        ? task.description : '-'}">Description</td>
+
+                    <td th:text="${task.project != null
+                        and task.project.name != null
+                        ? task.project.name : 'Not assigned'}">Project</td>
+
+                    <td>
+                        <span class="priority"
+                              th:classappend="${task.priority != null
+                                  and #strings.equalsIgnoreCase(task.priority, 'High')
+                                  ? ' priority-high'
+                                  : (task.priority != null
+                                      and #strings.equalsIgnoreCase(task.priority, 'Low')
+                                      ? ' priority-low' : ' priority-medium')}"
+                              th:text="${task.priority != null
+                                  ? task.priority : '-'}">Medium</span>
+                    </td>
+
+                    <td th:text="${task.deadline != null
+                        ? task.deadline : '-'}">Deadline</td>
+
+                    <td>
+                        <span class="status"
+                              th:classappend="${task.status == 'Completed'
+                                  ? ' status-completed'
+                                  : (task.status == 'In Progress'
+                                      ? ' status-progress' : ' status-pending')}"
+                              th:text="${task.status != null
+                                  ? task.status : 'Pending'}">Pending</span>
+                    </td>
+                </tr>
+
+                <tr th:if="${tasks == null or #lists.isEmpty(tasks)}">
+                    <td colspan="7" class="empty">
+                        No tasks have been assigned to you yet.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- UPDATE TASK STATUS -->
+    <section class="section">
+        <h2>Update My Task Status</h2>
+        <p style="color: #64748b; margin-bottom: 18px; font-size: 14px;">
+            Select the new status for one of your assigned tasks and click Update.
+        </p>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>Task</th>
+                    <th>Current Status</th>
+                    <th>New Status</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="task : ${tasks}">
+                    <td th:text="${task.title}">Task title</td>
+
+                    <td th:text="${task.status != null
+                        ? task.status : 'Pending'}">Pending</td>
+
+                    <td colspan="2">
+                        <form class="status-form"
+                              method="post"
+                              th:action="@{/employee/tasks/{id}/status(id=${task.id})}">
+
+                            <select name="status" required>
+                                <option value="Pending"
+                                        th:selected="${task.status == 'Pending'
+                                            or task.status == null}">
+                                    Pending
+                                </option>
+
+                                <option value="In Progress"
+                                        th:selected="${task.status == 'In Progress'}">
+                                    In Progress
+                                </option>
+
+                                <option value="Completed"
+                                        th:selected="${task.status == 'Completed'}">
+                                    Completed
+                                </option>
+                            </select>
+
+                            <button type="submit" class="update-btn">
+                                Update
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+
+                <tr th:if="${tasks == null or #lists.isEmpty(tasks)}">
+                    <td colspan="4" class="empty">
+                        There are no assigned tasks to update.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+<footer class="footer">
+    Project Task Management System
+</footer>
+
+<!-- PIE CHART -->
+<script th:inline="javascript">
+    const completedTasks = Number(/*[[${completedCount}]]*/ 0) || 0;
+    const inProgressTasks = Number(/*[[${inProgressCount}]]*/ 0) || 0;
+    const pendingTasks = Number(/*[[${pendingCount}]]*/ 0) || 0;
+
+    const chartCanvas = document.getElementById('taskChart');
+
+    new Chart(chartCanvas, {
+        type: 'pie',
+        data: {
+            labels: ['Completed', 'In Progress', 'Pending'],
+            datasets: [{
+                data: [completedTasks, inProgressTasks, pendingTasks],
+                backgroundColor: ['#16a34a', '#2563eb', '#f59e0b'],
+                borderColor: '#ffffff',
+                borderWidth: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': ' + context.raw + ' task(s)';
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

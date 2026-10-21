@@ -1,7 +1,6 @@
 package com.projectmanagement.projecttaskmanagementsystem;
 
-import com.projectmanagement.projecttaskmanagementsystem.repository.ProjectRepository;
-import com.projectmanagement.projecttaskmanagementsystem.repository.TaskRepository;
+import com.projectmanagement.projecttaskmanagementsystem.repository.*;
 import com.projectmanagement.projecttaskmanagementsystem.repository.TeamMemberRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

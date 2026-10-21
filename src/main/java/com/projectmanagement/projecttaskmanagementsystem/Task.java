@@ -1,6 +1,7 @@
 package com.projectmanagement.projecttaskmanagementsystem;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "tasks")
@@ -11,16 +12,24 @@ public class Task {
     private Long id;
 
     private String title;
-
     private String description;
-
     private String status;
-
     private String priority;
 
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
+
+    @Column(name = "deadline")
+    private LocalDate deadline;
+
+    @ManyToOne
+    @JoinColumn(name = "team_member_id")
+    private TeamMember teamMember;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_admin_id")
+    private AppUser ownerAdmin;
 
     public Task() {
     }
@@ -61,11 +70,35 @@ public class Task {
         this.priority = priority;
     }
 
-    public Project getProject(){
+    public Project getProject() {
         return project;
     }
 
-    public void setProject(Project project){
+    public void setProject(Project project) {
         this.project = project;
+    }
+
+    public LocalDate getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(LocalDate deadline) {
+        this.deadline = deadline;
+    }
+
+    public TeamMember getTeamMember() {
+        return teamMember;
+    }
+
+    public void setTeamMember(TeamMember teamMember) {
+        this.teamMember = teamMember;
+    }
+
+    public AppUser getOwnerAdmin() {
+        return ownerAdmin;
+    }
+
+    public void setOwnerAdmin(AppUser ownerAdmin) {
+        this.ownerAdmin = ownerAdmin;
     }
 }

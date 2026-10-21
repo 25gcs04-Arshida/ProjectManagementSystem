@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Dashboard</title>
+    <style>
+        body { margin:0; font-family:Arial,sans-serif; background:#f1f5fa; color:#263449; }
+        header { background:#183153; color:white; padding:20px; }
+        main { max-width:1000px; margin:25px auto; padding:0 18px; }
+        section { background:white; padding:22px; border-radius:10px; margin-bottom:22px; }
+        h1,h2 { color:#183153; }
+        header h1 { color:white; margin:0; }
+        label { display:block; margin-top:12px; }
+        input,select { width:100%; box-sizing:border-box; padding:11px; margin-top:5px; border:1px solid #ccd5e0; border-radius:5px; }
+        button,.link { display:inline-block; margin-top:16px; padding:11px 15px; background:#183153; color:white; border:0; border-radius:5px; text-decoration:none; cursor:pointer; }
+        table { width:100%; border-collapse:collapse; }
+        th,td { padding:11px; text-align:left; border-bottom:1px solid #ddd; }
+        th { background:#183153; color:white; }
+        .table-wrap { overflow-x:auto; }
+        .error { color:#b42318; }
+        .success { color:#18794e; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Admin Dashboard</h1>
+    <p>Manage user accounts and your team.</p>
+</header>
+
+<main>
+    <section>
+        <h2>Create Manager or Employee</h2>
+
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+        <p class="success" th:if="${param.created}">
+            Account created successfully.
+        </p>
+
+        <form th:action="@{/admin/users/create}" method="post">
+            <label for="fullName">Full name</label>
+            <input id="fullName" name="fullName" required>
+
+            <label for="username">Unique username</label>
+            <input id="username" name="username" required>
+
+            <label for="password">Temporary password (minimum 8 characters)</label>
+            <input id="password" name="password" type="password"
+                   minlength="8" required>
+
+            <label for="role">User role</label>
+            <select id="role" name="role" required>
+                <option value="">Select role</option>
+                <option value="MANAGER">Manager</option>
+                <option value="EMPLOYEE">Employee</option>
+            </select>
+
+            <button type="submit">Create Account</button>
+        </form>
+    </section>
+
+    <section>
+        <h2>Registered Accounts</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.fullName}"></td>
+                    <td th:text="${user.username}"></td>
+                    <td th:text="${user.role}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+        <button type="submit">Logout</button>
+    </form>
+</main>
+</body>
+</html>

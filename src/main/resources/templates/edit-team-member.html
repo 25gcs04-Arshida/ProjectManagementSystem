@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,42 +7,225 @@
     <title>Edit Team Member - Project Task Management System</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f6f9;
             margin: 0;
+            color: #333;
         }
 
         .navbar {
             background-color: #172554;
             color: white;
-            padding: 18px 35px;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
-        .navbar h1 {
+        .navbar h2 {
             margin: 0;
-            font-size: 24px;
+            font-size: 22px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 18px;
+            font-size: 14px;
+        }
+
+        .navbar a:hover {
+            color: #bfdbfe;
         }
 
         .container {
-            max-width: 650px;
-            margin: 40px auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            max-width: 600px;
+            margin: 45px auto;
+            padding: 0 18px;
         }
 
-        h2 {
+        .form-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
             color: #172554;
             margin-top: 0;
+            margin-bottom: 8px;
+            font-size: 26px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
         }
 
         label {
+            display: block;
+            margin-bottom: 8px;
             font-weight: bold;
+            font-size: 14px;
         }
 
         input,
         select {
             width: 100%;
             padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 15px;
+            background-color: white;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 15px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .btn-update {
+            background-color: #1d4ed8;
+            color: white;
+        }
+
+        .btn-update:hover {
+            background-color: #1e40af;
+        }
+
+        .btn-cancel {
+            background-color: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .btn-cancel:hover {
+            background-color: #cbd5e1;
+        }
+
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 16px;
+            }
+
+            .navbar a {
+                margin-left: 0;
+                margin-right: 12px;
+            }
+
+            .form-card {
+                padding: 22px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <h2>Project Task Management System</h2>
+
+    <div>
+        <a th:href="@{/}">Home</a>
+        <a th:href="@{/projects}">Projects</a>
+        <a th:href="@{/tasks}">Tasks</a>
+        <a th:href="@{/team}">Team</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <div class="form-card">
+
+        <h1>Edit Team Member</h1>
+        <p class="subtitle">
+            Update the details of your team member below.
+        </p>
+
+        <form th:action="@{/team/update}"
+              th:object="${teamMember}"
+              method="post">
+
+            <input type="hidden" th:field="*{id}">
+
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text"
+                       id="name"
+                       th:field="*{name}"
+                       placeholder="Enter full name"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email"
+                       id="email"
+                       th:field="*{email}"
+                       placeholder="Enter email address"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="role">Role</label>
+                <input type="text"
+                       id="role"
+                       th:field="*{role}"
+                       placeholder="Enter team role"
+                       required>
+            </div>
+
+            <div class="buttons">
+                <button type="submit" class="btn btn-update">
+                    Update Member
+                </button>
+
+                <a th:href="@{/team}" class="btn btn-cancel">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

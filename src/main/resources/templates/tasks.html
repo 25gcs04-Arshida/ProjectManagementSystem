@@ -1,309 +1,155 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Tasks - Project Task Management System</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Task Management</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
-            margin: 0;
-        }
-
-        .navbar {
-            background-color: #172554;
-            color: white;
-            padding: 18px 35px;
-        }
-
-        .navbar h1 {
-            margin: 0 0 12px 0;
-            font-size: 24px;
-        }
-
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            margin-right: 25px;
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 35px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        h2 {
-            color: #172554;
-        }
-
-        label {
-            font-weight: bold;
-        }
-
-        input, textarea, select {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0 18px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-        textarea {
-            height: 90px;
-            resize: vertical;
-        }
-
-        button {
-            background-color: #172554;
-            color: white;
-            padding: 12px 22px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #1e3a8a;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th {
-            background-color: #172554;
-            color: white;
-            padding: 12px;
-        }
-
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-            text-align: center;
-        }
-
-        .status,
-        .priority {
-            display: inline-block;
-            padding: 6px 10px;
-            border-radius: 15px;
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .status {
-            background-color: #e0e7ff;
-            color: #172554;
-        }
-
-        .priority {
-            background-color: #fef3c7;
-            color: #92400e;
-        }
-
-        .action a {
-            color: #172554;
-            text-decoration: none;
-            margin: 0 5px;
-            font-weight: bold;
-        }
-
-        .action a:hover {
-            text-decoration: underline;
-        }
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: Arial, sans-serif; background: #f3f6fb; color: #26344a; }
+        header { background: #102544; color: white; padding: 20px 5%; }
+        nav { background: #18365e; padding: 14px 5%; display: flex; gap: 22px; flex-wrap: wrap; }
+        nav a, nav button { color: white; text-decoration: none; background: none; border: 0; cursor: pointer; }
+        main { max-width: 1200px; margin: 28px auto; padding: 0 18px; }
+        .panel { background: white; border-radius: 10px; padding: 22px; margin-bottom: 24px; box-shadow: 0 3px 12px #0000000d; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 7px; }
+        input, textarea, select { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; background: white; }
+        textarea { min-height: 80px; }
+        .full { grid-column: 1 / -1; }
+        button.primary { background: #174ea6; color: white; border: 0; border-radius: 6px; padding: 12px 18px; cursor: pointer; font-weight: bold; }
+        .table-wrap { overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; min-width: 850px; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e5eaf1; }
+        th { background: #edf2f9; }
+        a { color: #174ea6; }
+        @media(max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .full { grid-column: auto; } }
     </style>
 </head>
-
 <body>
+<header><h2>Project Task Management System</h2></header>
 
-<div class="navbar">
-
-    <h1>Project Task Management System</h1>
-
-    <a href="/">Dashboard</a>
-    <a href="/projects">Projects</a>
-    <a href="/tasks">Tasks</a>
-    <a href="/team">Team Members</a>
-
-</div>
-
-<div class="container">
-
-    <h2>Task Management</h2>
-
-    <!-- CREATE TASK -->
-
-    <form action="/tasks/save" method="post">
-
-        <label>Project</label>
-
-        <select name="projectId" required>
-
-            <option value="">Select Project</option>
-
-            <option th:each="project : ${projects}"
-                    th:value="${project.id}"
-                    th:text="${project.name}">
-            </option>
-
-        </select>
-
-
-        <label>Task Title</label>
-
-        <input type="text"
-               name="title"
-               placeholder="Enter task title"
-               required>
-
-
-        <label>Description</label>
-
-        <textarea name="description"
-                  placeholder="Enter task description"></textarea>
-
-
-        <label>Status</label>
-
-        <select name="status">
-
-            <option value="Not Started">Not Started</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Completed">Completed</option>
-
-        </select>
-
-
-        <label>Priority</label>
-
-        <select name="priority">
-
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-
-        </select>
-
-
-        <button type="submit">
-            Add Task
-        </button>
-
+<nav>
+    <a th:href="@{/projects}">Projects</a>
+    <a th:href="@{/tasks}">Tasks</a>
+    <a th:href="@{/team}">Team Members</a>
+    <form th:action="@{/logout}" method="post" style="margin:0">
+        <button type="submit">Logout</button>
     </form>
+</nav>
 
+<main>
+    <section class="panel">
+        <h2>Add Task</h2>
+        <p>Choose a project and assign this task to a team member.</p>
 
-    <hr style="margin:30px 0;">
+        <form th:action="@{/tasks/save}" method="post">
+            <div class="form-grid">
+                <div>
+                    <label for="title">Task Title</label>
+                    <input id="title" name="title" required>
+                </div>
 
+                <div>
+                    <label for="projectId">Project</label>
+                    <select id="projectId" name="projectId" required>
+                        <option value="">-- Select Project --</option>
+                        <option th:each="p : ${projects}"
+                                th:value="${p.id}"
+                                th:text="${p.name}"
+                                th:selected="${selectedProjectId != null and selectedProjectId == p.id}">
+                        </option>
+                    </select>
+                </div>
 
-    <!-- SEARCH -->
+                <div class="full">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description"></textarea>
+                </div>
 
-    <input type="text"
-           id="taskSearch"
-           placeholder="Search tasks..."
-           onkeyup="searchTasks()">
+                <div>
+                    <label for="teamMemberId">Assign Task To</label>
+                    <select id="teamMemberId" name="teamMemberId" required>
+                        <option value="">-- Select Team Member --</option>
+                        <option th:each="m : ${teamMembers}"
+                                th:value="${m.id}"
+                                th:text="${m.name}">
+                        </option>
+                    </select>
+                </div>
 
+                <div>
+                    <label for="status">Status</label>
+                    <select id="status" name="status" required>
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
 
-    <!-- TASK TABLE -->
+                <div>
+                    <label for="priority">Priority</label>
+                    <select id="priority" name="priority" required>
+                        <option value="Low">Low</option>
+                        <option value="Medium" selected>Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
 
-    <table id="taskTable">
+                <div>
+                    <label for="deadline">Deadline</label>
+                    <input id="deadline" name="deadline" type="date">
+                </div>
 
-        <thead>
+                <div class="full">
+                    <button class="primary" type="submit">+ Add Task</button>
+                </div>
+            </div>
+        </form>
+    </section>
 
-        <tr>
-            <th>ID</th>
-            <th>Project</th>
-            <th>Task Title</th>
-            <th>Description</th>
-            <th>Status</th>
-            <th>Priority</th>
-            <th>Action</th>
-        </tr>
-
-        </thead>
-
-        <tbody>
-
-        <tr th:each="task : ${tasks}">
-
-            <td th:text="${task.id}"></td>
-
-            <td th:text="${task.project != null ? task.project.name : 'No Project'}"></td>
-
-            <td th:text="${task.title}"></td>
-
-            <td th:text="${task.description}"></td>
-
-            <td>
-                <span class="status"
-                      th:text="${task.status}">
-                    Not Started
-                </span>
-            </td>
-
-            <td>
-                <span class="priority"
-                      th:text="${task.priority}">
-                    Low
-                </span>
-            </td>
-
-            <td class="action">
-
-                <a th:href="@{'/tasks/edit/' + ${task.id}}">
-                    Edit
-                </a>
-
-                <a th:href="@{'/tasks/delete/' + ${task.id}}"
-                   onclick="return confirm('Are you sure you want to delete this task?')">
-                    Delete
-                </a>
-
-            </td>
-
-        </tr>
-
-        </tbody>
-
-    </table>
-
-</div>
-
-
-<script>
-
-    function searchTasks() {
-
-        let input = document.getElementById("taskSearch");
-
-        let filter = input.value.toLowerCase();
-
-        let rows = document.querySelectorAll("#taskTable tbody tr");
-
-        rows.forEach(function(row) {
-
-            let taskTitle = row.cells[2].textContent.toLowerCase();
-
-            if (taskTitle.includes(filter)) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
-
-        });
-
-    }
-
-</script>
-
+    <section class="panel">
+        <h2>Tasks</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Task</th>
+                    <th>Project</th>
+                    <th>Assigned To</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Deadline</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="t : ${tasks}">
+                    <td th:text="${t.id}"></td>
+                    <td>
+                        <strong th:text="${t.title}"></strong>
+                        <div th:text="${t.description}"></div>
+                    </td>
+                    <td th:text="${t.project != null ? t.project.name : 'Not selected'}"></td>
+                    <td th:text="${t.teamMember != null ? t.teamMember.name : 'Not assigned'}"></td>
+                    <td th:text="${t.status}"></td>
+                    <td th:text="${t.priority}"></td>
+                    <td th:text="${t.deadline != null ? t.deadline : 'Not set'}"></td>
+                    <td>
+                        <a th:href="@{/tasks/edit/{id}(id=${t.id})}">Edit</a>
+                        |
+                        <a th:href="@{/tasks/delete/{id}(id=${t.id})}"
+                           onclick="return confirm('Delete this task?');">Delete</a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(tasks)}">
+                    <td colspan="8">No tasks yet. Add a task using the form above.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
 </body>
 </html>

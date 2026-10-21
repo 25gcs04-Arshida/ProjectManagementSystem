@@ -158,6 +158,20 @@
 
         </select>
 
+        <label>Assign Team Member</label>
+        <select name="teamMemberId">
+            <option value="">-- Unassigned --</option>
+            <option th:each="member : ${teamMembers}"
+                    th:value="${member.id}"
+                    th:text="${member.name}"
+                    th:selected="${project.teamMember != null and project.teamMember.id == member.id}">
+            </option>
+        </select>
+
+        <label>Project Deadline</label>
+        <input type="date"
+               name="deadline"
+               th:value="${project.deadline}">
 
         <button type="submit">
             Update Project

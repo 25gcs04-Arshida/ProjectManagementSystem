@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Project Details | Project Task Management System</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6fa;
+            color: #263449;
+        }
+
+        .navbar {
+            background: #183153;
+            color: white;
+            padding: 18px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 18px;
+            font-size: 14px;
+        }
+
+        .navbar a:hover {
+            color: #a9d1ff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #183153;
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .page-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            color: #183153;
+            overflow-wrap: anywhere;
+        }
+
+        .subtitle {
+            color: #6b7788;
+            margin: 0;
+        }
+
+        .panel {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 3px 12px #1831530d;
+        }
+
+        h2 {
+            color: #183153;
+            margin-top: 0;
+            font-size: 20px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .detail-item {
+            padding: 14px;
+            background: #f5f8fc;
+            border-radius: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .detail-label {
+            display: block;
+            color: #6b7788;
+            font-size: 13px;
+            margin-bottom: 7px;
+        }
+
+        .detail-value {
+            color: #183153;
+            font-weight: bold;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 3px 12px #1831530d;
+            border-left: 4px solid #183153;
+        }
+
+        .summary-card.completed {
+            border-left-color: #23966b;
+        }
+
+        .summary-card.progress {
+            border-left-color: #e3a008;
+        }
+
+        .summary-card.pending {
+            border-left-color: #718096;
+        }
+
+        .summary-label {
+            font-size: 13px;
+            color: #6b7788;
+            margin-bottom: 10px;
+        }
+
+        .summary-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #183153;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 14px;
+            background: #e7edf5;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 15px 0 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #23966b;
+            border-radius: 20px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-caption {
+            color: #6b7788;
+            font-size: 14px;
+        }
+
+        .chart-area {
+            width: 100%;
+            max-width: 340px;
+            margin: 0 auto;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 850px;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        th, td {
+            padding: 13px 12px;
+            border-bottom: 1px solid #e4e9f0;
+            text-align: left;
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        th {
+            background: #183153;
+            color: white;
+            white-space: nowrap;
+        }
+
+        tbody tr:hover {
+            background: #f7f9fc;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            background: #e8edf5;
+            color: #34445c;
+            white-space: nowrap;
+        }
+
+        .status-completed {
+            background: #d9f4e7;
+            color: #176b4b;
+        }
+
+        .status-progress {
+            background: #fff0c2;
+            color: #825b00;
+        }
+
+        .status-pending {
+            background: #e8edf5;
+            color: #34445c;
+        }
+
+        .priority-high {
+            color: #c0392b;
+            font-weight: bold;
+        }
+
+        .priority-medium {
+            color: #b7791f;
+            font-weight: bold;
+        }
+
+        .priority-low {
+            color: #23845d;
+            font-weight: bold;
+        }
+
+        .deadline-overdue {
+            color: #c0392b;
+            font-weight: bold;
+        }
+
+        .deadline-soon {
+            color: #b7791f;
+            font-weight: bold;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 25px;
+            color: #6b7788;
+        }
+
+        .button {
+            display: inline-block;
+            background: #183153;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+            padding: 11px 16px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .button:hover {
+            background: #254a78;
+        }
+
+        .footer {
+            text-align: center;
+            color: #7b8796;
+            font-size: 13px;
+            padding: 20px;
+        }
+
+        @media (max-width: 800px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                padding: 16px 20px;
+            }
+
+            .navbar a {
+                margin-left: 0;
+                margin-right: 12px;
+            }
+        }
+
+        @media (max-width: 450px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .panel {
+                padding: 17px;
+            }
+
+            .container {
+                padding: 0 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="brand">Project Task Management System</div>
+
+    <div>
+        <a th:href="@{/}">Home</a>
+        <a th:href="@{/projects}">Projects</a>
+        <a th:href="@{/tasks}">Tasks</a>
+        <a th:href="@{/team}">Team</a>
+    </div>
+</nav>
+
+<main class="container">
+
+    <a class="back-link" th:href="@{/projects}">
+        &#8592; Back to Projects
+    </a>
+
+    <div class="page-heading">
+        <div>
+            <h1 th:text="${project.name}">Project Name</h1>
+            <p class="subtitle">Project overview and task progress</p>
+        </div>
+
+        <a class="button" th:href="@{/tasks}">
+            Manage Tasks
+        </a>
+    </div>
+
+    <section class="panel">
+        <h2>Project Information</h2>
+
+        <div class="details-grid">
+
+            <div class="detail-item">
+                <span class="detail-label">Project Name</span>
+                <span class="detail-value"
+                      th:text="${project.name}">Project Name</span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">Project Status</span>
+                <span class="detail-value"
+                      th:text="${project.status != null ? project.status : 'Not specified'}">
+                    Status
+                </span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">Assigned Team Member</span>
+                <span class="detail-value"
+                      th:if="${project.teamMember != null}"
+                      th:text="${project.teamMember.name}">
+                    Team Member
+                </span>
+                <span class="detail-value"
+                      th:unless="${project.teamMember != null}">
+                    Unassigned
+                </span>
+            </div>
+
+            <div class="detail-item">
+                <span class="detail-label">Project Deadline</span>
+                <span class="detail-value"
+                      th:if="${project.deadline != null}"
+                      th:text="${#temporals.format(project.deadline, 'dd MMM yyyy')}">
+                    Deadline
+                </span>
+                <span class="detail-value"
+                      th:unless="${project.deadline != null}">
+                    Not set
+                </span>
+            </div>
+
+            <div class="detail-item" style="grid-column: 1 / -1;">
+                <span class="detail-label">Description</span>
+                <span class="detail-value"
+                      th:text="${project.description != null and !project.description.isEmpty() ? project.description : 'No description provided'}">
+                    Project Description
+                </span>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="summary-grid">
+
+        <div class="summary-card">
+            <div class="summary-label">Total Tasks</div>
+            <div class="summary-number" th:text="${totalTasks}">0</div>
+        </div>
+
+        <div class="summary-card completed">
+            <div class="summary-label">Completed Tasks</div>
+            <div class="summary-number" th:text="${completedCount}">0</div>
+        </div>
+
+        <div class="summary-card progress">
+            <div class="summary-label">In Progress</div>
+            <div class="summary-number" th:text="${inProgressCount}">0</div>
+        </div>
+
+        <div class="summary-card pending">
+            <div class="summary-label">Not Started</div>
+            <div class="summary-number" th:text="${notStartedCount}">0</div>
+        </div>
+
+    </section>
+
+    <section class="panel">
+        <h2>Project Completion</h2>
+
+        <div class="progress-track">
+            <div class="progress-fill"
+                 th:style="'width:' + ${progressPercent} + '%'">
+            </div>
+        </div>
+
+        <p class="progress-caption">
+            <strong th:text="${progressPercent}">0</strong>% completed
+            based on the number of completed tasks.
+        </p>
+    </section>
+
+    <section class="panel">
+        <h2>Task Status Overview</h2>
+
+        <div style="width:100%; max-width:450px; height:320px; margin:auto;">
+            <canvas id="taskStatusChart"></canvas>
+        </div>
+
+        <p id="chartMessage"
+           style="text-align:center; color:#666;">
+            Loading task chart...
+        </p>
+    </section>
+
+    <section class="panel">
+        <h2>Project Tasks</h2>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Task Title</th>
+                    <th>Description</th>
+                    <th>Assigned Member</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Deadline</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr th:each="task : ${tasks}">
+                    <td th:text="${task.id}">1</td>
+
+                    <td th:text="${task.title}">Task Title</td>
+
+                    <td th:text="${task.description != null ? task.description : '-'}">
+                        Description
+                    </td>
+
+                    <td>
+                        <span th:if="${task.teamMember != null}"
+                              th:text="${task.teamMember.name}">
+                            Team Member
+                        </span>
+
+                        <span th:unless="${task.teamMember != null}">
+                            Unassigned
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="status-badge"
+                              th:classappend="${task.status != null and task.status.equalsIgnoreCase('Completed') ? ' status-completed' : (task.status != null and task.status.equalsIgnoreCase('In Progress') ? ' status-progress' : ' status-pending')}"
+                              th:text="${task.status != null ? task.status : 'Not Started'}">
+                            Status
+                        </span>
+                    </td>
+
+                    <td>
+                        <span th:classappend="${task.priority != null and task.priority.equalsIgnoreCase('High') ? ' priority-high' : (task.priority != null and task.priority.equalsIgnoreCase('Medium') ? ' priority-medium' : (task.priority != null and task.priority.equalsIgnoreCase('Low') ? ' priority-low' : ''))}"
+                              th:text="${task.priority != null ? task.priority : '-'}">
+                            Priority
+                        </span>
+                    </td>
+
+                    <td>
+                        <span th:if="${task.deadline == null}">
+                            Not set
+                        </span>
+
+                        <span th:if="${task.deadline != null}"
+                              th:text="${#temporals.format(task.deadline, 'dd MMM yyyy')}"
+                              th:classappend="${task.status == null or !task.status.equalsIgnoreCase('Completed') ? (task.deadline.isBefore(T(java.time.LocalDate).now()) ? ' deadline-overdue' : (task.deadline.isBefore(T(java.time.LocalDate).now().plusDays(3)) ? ' deadline-soon' : '')) : ''}">
+                            Deadline
+                        </span>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(tasks)}">
+                    <td colspan="7" class="empty-message">
+                        No tasks have been added to this project yet.
+                        Add a task and assign it to this project to see it here.
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <p style="margin-top:22px;">
+            <a class="button" th:href="@{/tasks}">
+                + Manage Project Tasks
+            </a>
+        </p>
+    </section>
+
+</main>
+
+<footer class="footer">
+    Project Task Management System
+</footer>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const message = document.getElementById('chartMessage');
+        const canvas = document.getElementById('taskStatusChart');
+
+        const completed = Number(/*[[${completedCount}]]*/ 0);
+        const inProgress = Number(/*[[${inProgressCount}]]*/ 0);
+        const notStarted = Number(/*[[${notStartedCount}]]*/ 0);
+
+        function showMessage(text) {
+            if (message) {
+                message.textContent = text;
+            }
+        }
+
+        if (!canvas) {
+            showMessage('Chart canvas is missing from the page.');
+            return;
+        }
+
+        if (typeof Chart === 'undefined') {
+            showMessage('Chart library failed to load. Check your internet connection.');
+            return;
+        }
+
+        try {
+            new Chart(canvas, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'In Progress', 'Not Started'],
+                    datasets: [{
+                        data: [completed, inProgress, notStarted],
+                        backgroundColor: ['#23966b', '#e3a008', '#718096'],
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            showMessage(
+                'Total tasks: ' + (completed + inProgress + notStarted)
+            );
+
+        } catch (error) {
+            console.error('Chart error:', error);
+            showMessage('Chart error: ' + error.message);
+        }
+    });
+</script>
+
+</body>
+</html>

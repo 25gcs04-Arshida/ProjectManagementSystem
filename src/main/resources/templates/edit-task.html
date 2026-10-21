@@ -90,7 +90,6 @@
                th:value="${task.id}">
 
 
-        <!-- PROJECT -->
 
         <label>Project</label>
 
@@ -107,7 +106,6 @@
         </select>
 
 
-        <!-- TITLE -->
 
         <label>Task Title</label>
 
@@ -117,16 +115,12 @@
                required>
 
 
-        <!-- DESCRIPTION -->
-
         <label>Description</label>
 
         <textarea name="description"
                   th:text="${task.description}">
         </textarea>
 
-
-        <!-- STATUS -->
 
         <label>Status</label>
 
@@ -150,8 +144,6 @@
         </select>
 
 
-        <!-- PRIORITY -->
-
         <label>Priority</label>
 
         <select name="priority">
@@ -173,6 +165,20 @@
 
         </select>
 
+        <label>Assign Team Member</label>
+        <select name="teamMemberId">
+            <option value="">-- Unassigned --</option>
+            <option th:each="member : ${teamMembers}"
+                    th:value="${member.id}"
+                    th:text="${member.name}"
+                    th:selected="${task.teamMember != null and task.teamMember.id == member.id}">
+            </option>
+        </select>
+
+        <label>Task Deadline</label>
+        <input type="date"
+               name="daeadline"
+               th:value="${task.deadline}">
 
         <button type="submit">
             Update Task
@@ -181,6 +187,7 @@
         <a href="/tasks" class="cancel">
             Cancel
         </a>
+
 
     </form>
 

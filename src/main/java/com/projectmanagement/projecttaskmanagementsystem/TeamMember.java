@@ -11,10 +11,12 @@ public class TeamMember {
     private Long id;
 
     private String name;
-
     private String email;
-
     private String role;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_admin_id")
+    private AppUser ownerAdmin;
 
     public TeamMember() {
     }
@@ -45,5 +47,13 @@ public class TeamMember {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public AppUser getOwnerAdmin() {
+        return ownerAdmin;
+    }
+
+    public void setOwnerAdmin(AppUser ownerAdmin) {
+        this.ownerAdmin = ownerAdmin;
     }
 }

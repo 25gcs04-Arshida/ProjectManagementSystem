@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Register Admin</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f5fa;
+            display: grid;
+            place-items: center;
+            min-height: 100vh;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: min(360px, calc(100% - 64px));
+            box-shadow: 0 5px 25px #18315318;
+        }
+        h1 { color: #183153; }
+        label { display: block; margin-top: 15px; }
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 11px;
+            margin-top: 6px;
+            border: 1px solid #ccd5e0;
+            border-radius: 6px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 22px;
+            background: #183153;
+            color: white;
+            border: 0;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .error { color: #b42318; }
+        a { color: #183153; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>Create Admin Account</h1>
+    <p>The first admin account controls registration of other users.</p>
+
+    <p class="error" th:if="${error}" th:text="${error}"></p>
+
+    <form th:action="@{/register-admin}" method="post">
+        <label for="fullName">Full name</label>
+        <input id="fullName" name="fullName" type="text" required>
+
+        <label for="username">Unique username</label>
+        <input id="username" name="username"
+               type="text" autocomplete="username" required>
+
+        <label for="password">Password (at least 8 characters)</label>
+        <input id="password" name="password"
+               type="password" minlength="8"
+               autocomplete="new-password" required>
+
+        <button type="submit">Create Admin Account</button>
+    </form>
+
+    <p><a th:href="@{/login}">Back to login</a></p>
+</div>
+</body>
+</html>

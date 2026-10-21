@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Manager Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f2f5fa;
+            color: #1d2b45;
+        }
+        header {
+            background: #172b4d;
+            color: white;
+            padding: 22px 30px;
+        }
+        main { padding: 25px; }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+        }
+        .card, section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px #0000000d;
+        }
+        .number { font-size: 28px; font-weight: bold; }
+        .chart { max-width: 420px; margin: 15px auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td {
+            text-align: left;
+            padding: 11px;
+            border-bottom: 1px solid #e5e9f0;
+        }
+        th { background: #edf2f9; }
+        .table-wrap { overflow-x: auto; }
+        a { color: #1769aa; }
+        @media (max-width: 600px) {
+            main { padding: 12px; }
+            header { padding: 18px; }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Manager Dashboard</h1>
+    <p th:text="'Welcome, ' + ${manager.fullName}">Welcome</p>
+    <nav>
+        <a href="/projects" style="color:white">Projects</a> |
+        <a href="/tasks" style="color:white">Tasks</a> |
+        <a href="/team" style="color:white">Team Members</a>
+        <form action="/logout" method="post" style="display:inline">
+            <button type="submit">Logout</button>
+        </form>
+    </nav>
+</header>
+
+<main>
+    <div class="cards">
+        <div class="card">
+            <p>Total Projects</p>
+            <div class="number" th:text="${projectCount}">0</div>
+        </div>
+        <div class="card">
+            <p>Total Tasks</p>
+            <div class="number" th:text="${taskCount}">0</div>
+        </div>
+        <div class="card">
+            <p>Completed Tasks</p>
+            <div class="number" th:text="${completedCount}">0</div>
+        </div>
+        <div class="card">
+            <p>In Progress</p>
+            <div class="number" th:text="${inProgressCount}">0</div>
+        </div>
+        <div class="card">
+            <p>Pending Tasks</p>
+            <div class="number" th:text="${pendingCount}">0</div>
+        </div>
+    </div>
+
+    <section>
+        <h2>Task Progress</h2>
+        <div class="chart">
+            <canvas id="taskChart"></canvas>
+        </div>
+    </section>
+
+    <section>
+        <h2>Project Details</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>Project</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Deadline</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="project : ${projects}">
+                    <td th:text="${project.name}"></td>
+                    <td th:text="${project.description}"></td>
+                    <td th:text="${project.status}"></td>
+                    <td th:text="${project.deadline}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(projects)}">
+                    <td colspan="4">No projects found in this workspace.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section>
+        <h2>All Workspace Tasks and Assigned Employees</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>Task</th>
+                    <th>Project</th>
+                    <th>Assigned Employee</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Deadline</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="task : ${tasks}">
+                    <td th:text="${task.title}"></td>
+                    <td th:text="${task.project != null ? task.project.name : 'Not assigned'}"></td>
+                    <td th:text="${task.teamMember != null ? task.teamMember.name : 'Unassigned'}"></td>
+                    <td th:text="${task.priority}"></td>
+                    <td th:text="${task.status}"></td>
+                    <td th:text="${task.deadline}"></td>
+                    <td th:text="${task.description}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(tasks)}">
+                    <td colspan="7">No tasks found in this workspace.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<script th:inline="javascript">
+    const completed = /*[[${completedCount}]]*/ 0;
+    const inProgress = /*[[${inProgressCount}]]*/ 0;
+    const pending = /*[[${pendingCount}]]*/ 0;
+
+    new Chart(document.getElementById('taskChart'), {
+        type: 'pie',
+        data: {
+            labels: ['Completed', 'In Progress', 'Pending'],
+            datasets: [{
+                data: [completed, inProgress, pending]
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+</script>
+</body>
+</html>
