@@ -3,71 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Register Admin</title>
+
+    <title>Register Admin | Project Task Management System</title>
+
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f1f5fa;
-            display: grid;
-            place-items: center;
             min-height: 100vh;
+            padding: 28px 16px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #eaf1ff, #f7f9ff, #dce8ff);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 26px;
+            max-width: 650px;
+        }
+
+        .brand h1 {
+            color: #15366b;
+            font-size: clamp(25px, 5vw, 38px);
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            line-height: 1.25;
+            margin: 0 0 10px;
+            text-transform: uppercase;
+        }
+
+        .brand p {
+            color: #60718b;
+            font-size: 15px;
+            margin: 0;
+        }
+
         .card {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            width: min(360px, calc(100% - 64px));
-            box-shadow: 0 5px 25px #18315318;
-        }
-        h1 { color: #183153; }
-        label { display: block; margin-top: 15px; }
-        input {
             width: 100%;
-            box-sizing: border-box;
-            padding: 11px;
-            margin-top: 6px;
-            border: 1px solid #ccd5e0;
-            border-radius: 6px;
+            max-width: 440px;
+            background: #ffffff;
+            padding: 34px;
+            border-radius: 18px;
+            box-shadow: 0 15px 45px rgba(24, 49, 83, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.9);
         }
+
+        .card h2 {
+            color: #183153;
+            font-size: 26px;
+            font-weight: 800;
+            margin: 0 0 10px;
+        }
+
+        .subtitle {
+            color: #718096;
+            font-size: 14px;
+            line-height: 1.7;
+            margin: 0 0 22px;
+        }
+
+        .info {
+            padding: 12px;
+            border-radius: 8px;
+            background: #edf4ff;
+            color: #28528c;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .error {
+            padding: 12px;
+            border-radius: 8px;
+            background: #fff0ef;
+            color: #b42318;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin: 18px 0 8px;
+            color: #34445c;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        input {
+            display: block;
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #d5deeb;
+            border-radius: 9px;
+            background: #fbfcff;
+            color: #183153;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus {
+            border-color: #3468c0;
+            box-shadow: 0 0 0 3px rgba(52, 104, 192, 0.13);
+            background: #ffffff;
+        }
+
         button {
             width: 100%;
-            padding: 12px;
-            margin-top: 22px;
-            background: #183153;
-            color: white;
-            border: 0;
-            border-radius: 6px;
+            margin-top: 26px;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient(135deg, #183153, #2859a5);
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 800;
             cursor: pointer;
+            box-shadow: 0 6px 15px rgba(24, 49, 83, 0.18);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        .error { color: #b42318; }
-        a { color: #183153; }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 9px 20px rgba(24, 49, 83, 0.25);
+        }
+
+        .back {
+            text-align: center;
+            margin: 24px 0 0;
+            color: #68778b;
+            font-size: 14px;
+        }
+
+        .back a {
+            color: #2455a4;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .back a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            margin-top: 25px;
+            color: #8290a5;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 27px 22px;
+            }
+
+            .brand h1 {
+                letter-spacing: 0.7px;
+            }
+        }
     </style>
 </head>
-<body>
-<div class="card">
-    <h1>Create Admin Account</h1>
-    <p>The first admin account controls registration of other users.</p>
 
-    <p class="error" th:if="${error}" th:text="${error}"></p>
+<body>
+
+<header class="brand">
+    <h1>Project Task<br>Management System</h1>
+    <p>Organize projects. Manage tasks. Achieve more.</p>
+</header>
+
+<main class="card">
+    <h2>Create Admin Account</h2>
+
+    <p class="subtitle">
+        Set up your administrator account to manage your project workspace.
+    </p>
+
+    <div class="info">
+        <strong>Important:</strong> The first admin account controls
+        registration of other users.
+    </div>
+
+    <p class="error"
+       th:if="${error}"
+       th:text="${error}"></p>
 
     <form th:action="@{/register-admin}" method="post">
-        <label for="fullName">Full name</label>
-        <input id="fullName" name="fullName" type="text" required>
 
-        <label for="username">Unique username</label>
-        <input id="username" name="username"
-               type="text" autocomplete="username" required>
+        <label for="fullName">Full Name</label>
+        <input
+                id="fullName"
+                name="fullName"
+                type="text"
+                placeholder="Enter your full name"
+                autocomplete="name"
+                required>
 
-        <label for="password">Password (at least 8 characters)</label>
-        <input id="password" name="password"
-               type="password" minlength="8"
-               autocomplete="new-password" required>
+        <label for="username">Unique Username</label>
+        <input
+                id="username"
+                name="username"
+                type="text"
+                placeholder="Choose a username"
+                autocomplete="username"
+                required>
 
-        <button type="submit">Create Admin Account</button>
+        <label for="password">Password</label>
+        <input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="At least 8 characters"
+                minlength="8"
+                autocomplete="new-password"
+                required>
+
+        <button type="submit">CREATE ADMIN ACCOUNT</button>
     </form>
 
-    <p><a th:href="@{/login}">Back to login</a></p>
-</div>
+    <p class="back">
+        Already have an account?
+        <a th:href="@{/login}">Back to Login</a>
+    </p>
+</main>
+
+<footer class="footer">
+    © Project Task Management System
+</footer>
+
 </body>
 </html>

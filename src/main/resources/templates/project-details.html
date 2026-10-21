@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Project Details | Project Task Management System</title>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
     <style>
@@ -17,49 +14,58 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: #f4f6fa;
+            background: #f3f6fb;
             color: #263449;
         }
 
         .navbar {
-            background: #183153;
+            background: linear-gradient(135deg, #142b4b, #24568d);
             color: white;
-            padding: 18px 5%;
+            padding: 20px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 15px;
+            box-shadow: 0 4px 15px #142b4b20;
         }
 
         .brand {
-            font-size: 20px;
+            font-size: 21px;
             font-weight: bold;
+        }
+
+        .navbar div:last-child {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .navbar a {
             color: white;
             text-decoration: none;
-            margin-left: 18px;
+            padding: 9px 13px;
+            border-radius: 6px;
             font-size: 14px;
+            transition: background 0.2s ease;
         }
 
         .navbar a:hover {
-            color: #a9d1ff;
+            background: #ffffff20;
         }
 
         .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
+            max-width: 1250px;
+            margin: 32px auto;
+            padding: 0 22px;
         }
 
         .back-link {
             display: inline-block;
-            color: #183153;
+            color: #24568d;
             text-decoration: none;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
 
         .back-link:hover {
@@ -69,53 +75,58 @@
         .page-heading {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            gap: 15px;
+            align-items: center;
+            gap: 18px;
             flex-wrap: wrap;
-            margin-bottom: 22px;
+            margin-bottom: 25px;
         }
 
         h1 {
-            margin: 0 0 8px;
+            margin: 0 0 9px;
             color: #183153;
+            font-size: 30px;
             overflow-wrap: anywhere;
         }
 
         .subtitle {
-            color: #6b7788;
+            color: #718096;
             margin: 0;
+            line-height: 1.6;
         }
 
         .panel {
             background: white;
-            padding: 24px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            box-shadow: 0 3px 12px #1831530d;
+            padding: 26px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px #1831530c;
+            border: 1px solid #e9eef5;
         }
 
         h2 {
             color: #183153;
-            margin-top: 0;
-            font-size: 20px;
+            margin: 0 0 22px;
+            font-size: 21px;
         }
 
         .details-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 18px;
+            gap: 17px;
         }
 
         .detail-item {
-            padding: 14px;
-            background: #f5f8fc;
-            border-radius: 8px;
+            padding: 17px;
+            background: #f5f8fd;
+            border: 1px solid #e9eef7;
+            border-radius: 10px;
             overflow-wrap: anywhere;
+            line-height: 1.6;
         }
 
         .detail-label {
             display: block;
-            color: #6b7788;
+            color: #718096;
             font-size: 13px;
             margin-bottom: 7px;
         }
@@ -123,91 +134,116 @@
         .detail-value {
             color: #183153;
             font-weight: bold;
+            overflow-wrap: anywhere;
+        }
+
+        .description-item {
+            grid-column: 1 / -1;
         }
 
         .summary-grid {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
+            gap: 18px;
+            margin-bottom: 25px;
         }
 
         .summary-card {
             background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 3px 12px #1831530d;
-            border-left: 4px solid #183153;
+            border-radius: 13px;
+            padding: 23px;
+            box-shadow: 0 5px 20px #1831530c;
+            border: 1px solid #e9eef5;
+            border-top: 4px solid #356fc0;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 9px 25px #18315314;
         }
 
         .summary-card.completed {
-            border-left-color: #23966b;
+            border-top-color: #23966b;
         }
 
         .summary-card.progress {
-            border-left-color: #e3a008;
+            border-top-color: #e3a008;
         }
 
         .summary-card.pending {
-            border-left-color: #718096;
+            border-top-color: #718096;
         }
 
         .summary-label {
-            font-size: 13px;
-            color: #6b7788;
-            margin-bottom: 10px;
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 12px;
         }
 
         .summary-number {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: bold;
             color: #183153;
         }
 
         .progress-track {
             width: 100%;
-            height: 14px;
+            height: 16px;
             background: #e7edf5;
             border-radius: 20px;
             overflow: hidden;
-            margin: 15px 0 8px;
+            margin: 18px 0 12px;
         }
 
         .progress-fill {
             height: 100%;
-            background: #23966b;
+            background: linear-gradient(90deg, #23966b, #42c58e);
             border-radius: 20px;
-            transition: width 0.3s ease;
+            transition: width 0.4s ease;
         }
 
         .progress-caption {
-            color: #6b7788;
+            color: #718096;
             font-size: 14px;
+            margin-bottom: 0;
+            line-height: 1.6;
         }
 
         .chart-area {
             width: 100%;
-            max-width: 340px;
+            max-width: 450px;
+            height: 320px;
             margin: 0 auto;
+            position: relative;
+        }
+
+        .chart-message {
+            text-align: center;
+            color: #718096;
+            font-size: 14px;
+            margin-top: 15px;
         }
 
         .table-wrapper {
             width: 100%;
             overflow-x: auto;
+            border-radius: 9px;
         }
 
         table {
             width: 100%;
-            min-width: 850px;
+            min-width: 900px;
             border-collapse: collapse;
             margin-top: 12px;
         }
 
         th, td {
-            padding: 13px 12px;
-            border-bottom: 1px solid #e4e9f0;
+            padding: 15px 13px;
+            border-bottom: 1px solid #e8edf4;
             text-align: left;
             font-size: 14px;
+            line-height: 1.5;
             overflow-wrap: anywhere;
         }
 
@@ -215,15 +251,24 @@
             background: #183153;
             color: white;
             white-space: nowrap;
+            font-weight: 600;
+        }
+
+        tbody tr {
+            transition: background 0.2s ease;
         }
 
         tbody tr:hover {
-            background: #f7f9fc;
+            background: #f5f8fd;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
         }
 
         .status-badge {
             display: inline-block;
-            padding: 6px 10px;
+            padding: 6px 11px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: bold;
@@ -274,62 +319,106 @@
 
         .empty-message {
             text-align: center;
-            padding: 25px;
-            color: #6b7788;
+            padding: 28px;
+            color: #718096;
+            line-height: 1.7;
         }
 
         .button {
             display: inline-block;
-            background: #183153;
+            background: linear-gradient(135deg, #24568d, #356fc0);
             color: white;
             text-decoration: none;
-            border-radius: 7px;
-            padding: 11px 16px;
+            border-radius: 8px;
+            padding: 12px 18px;
             font-size: 14px;
             font-weight: bold;
+            border: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .button:hover {
-            background: #254a78;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 13px #24568d30;
         }
 
         .footer {
             text-align: center;
-            color: #7b8796;
+            color: #718096;
             font-size: 13px;
-            padding: 20px;
+            padding: 25px 15px;
+            margin-top: 15px;
+            border-top: 1px solid #e5ebf3;
         }
 
-        @media (max-width: 800px) {
+        @media (max-width: 900px) {
             .summary-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .navbar {
+                padding: 18px 22px;
             }
 
             .details-grid {
                 grid-template-columns: 1fr;
             }
 
-            .navbar {
-                padding: 16px 20px;
-            }
-
-            .navbar a {
-                margin-left: 0;
-                margin-right: 12px;
+            .description-item {
+                grid-column: auto;
             }
         }
 
-        @media (max-width: 450px) {
+        @media (max-width: 500px) {
             .summary-grid {
                 grid-template-columns: 1fr;
             }
 
-            .panel {
-                padding: 17px;
+            .navbar {
+                align-items: flex-start;
+            }
+
+            .brand {
+                font-size: 18px;
+            }
+
+            .navbar div:last-child {
+                gap: 4px;
+            }
+
+            .navbar a {
+                padding: 8px;
+                font-size: 13px;
             }
 
             .container {
-                padding: 0 12px;
+                margin: 23px auto;
+                padding: 0 13px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+
+            .panel {
+                padding: 18px;
+                border-radius: 11px;
+            }
+
+            .summary-card {
+                padding: 19px;
+            }
+
+            .summary-number {
+                font-size: 28px;
+            }
+
+            .chart-area {
+                height: 280px;
+            }
+
+            .button {
+                padding: 11px 14px;
             }
         }
     </style>
@@ -339,7 +428,6 @@
 
 <nav class="navbar">
     <div class="brand">Project Task Management System</div>
-
     <div>
         <a th:href="@{/}">Home</a>
         <a th:href="@{/projects}">Projects</a>
@@ -350,79 +438,58 @@
 
 <main class="container">
 
-    <a class="back-link" th:href="@{/projects}">
-        &#8592; Back to Projects
-    </a>
+    <a class="back-link" th:href="@{/projects}">&#8592; Back to Projects</a>
 
     <div class="page-heading">
         <div>
             <h1 th:text="${project.name}">Project Name</h1>
             <p class="subtitle">Project overview and task progress</p>
         </div>
-
-        <a class="button" th:href="@{/tasks}">
-            Manage Tasks
-        </a>
+        <a class="button" th:href="@{/tasks}">Manage Tasks</a>
     </div>
 
     <section class="panel">
         <h2>Project Information</h2>
 
         <div class="details-grid">
-
             <div class="detail-item">
                 <span class="detail-label">Project Name</span>
-                <span class="detail-value"
-                      th:text="${project.name}">Project Name</span>
+                <span class="detail-value" th:text="${project.name}">Project Name</span>
             </div>
 
             <div class="detail-item">
                 <span class="detail-label">Project Status</span>
                 <span class="detail-value"
-                      th:text="${project.status != null ? project.status : 'Not specified'}">
-                    Status
-                </span>
+                      th:text="${project.status != null ? project.status : 'Not specified'}">Status</span>
             </div>
 
             <div class="detail-item">
                 <span class="detail-label">Assigned Team Member</span>
                 <span class="detail-value"
                       th:if="${project.teamMember != null}"
-                      th:text="${project.teamMember.name}">
-                    Team Member
-                </span>
+                      th:text="${project.teamMember.name}">Team Member</span>
                 <span class="detail-value"
-                      th:unless="${project.teamMember != null}">
-                    Unassigned
-                </span>
+                      th:unless="${project.teamMember != null}">Unassigned</span>
             </div>
 
             <div class="detail-item">
                 <span class="detail-label">Project Deadline</span>
                 <span class="detail-value"
                       th:if="${project.deadline != null}"
-                      th:text="${#temporals.format(project.deadline, 'dd MMM yyyy')}">
-                    Deadline
-                </span>
+                      th:text="${#temporals.format(project.deadline, 'dd MMM yyyy')}">Deadline</span>
                 <span class="detail-value"
-                      th:unless="${project.deadline != null}">
-                    Not set
-                </span>
+                      th:unless="${project.deadline != null}">Not set</span>
             </div>
 
-            <div class="detail-item" style="grid-column: 1 / -1;">
+            <div class="detail-item description-item">
                 <span class="detail-label">Description</span>
                 <span class="detail-value"
-                      th:text="${project.description != null and !project.description.isEmpty() ? project.description : 'No description provided'}">
-                    Project Description
-                </span>
+                      th:text="${project.description != null and !project.description.isEmpty() ? project.description : 'No description provided'}">Project Description</span>
             </div>
-
         </div>
     </section>
 
     <section class="summary-grid">
-
         <div class="summary-card">
             <div class="summary-label">Total Tasks</div>
             <div class="summary-number" th:text="${totalTasks}">0</div>
@@ -442,7 +509,6 @@
             <div class="summary-label">Not Started</div>
             <div class="summary-number" th:text="${notStartedCount}">0</div>
         </div>
-
     </section>
 
     <section class="panel">
@@ -450,27 +516,22 @@
 
         <div class="progress-track">
             <div class="progress-fill"
-                 th:style="'width:' + ${progressPercent} + '%'">
-            </div>
+                 th:style="'width:' + ${progressPercent} + '%'"></div>
         </div>
 
         <p class="progress-caption">
-            <strong th:text="${progressPercent}">0</strong>% completed
-            based on the number of completed tasks.
+            <strong th:text="${progressPercent}">0</strong>% completed based on the number of completed tasks.
         </p>
     </section>
 
     <section class="panel">
         <h2>Task Status Overview</h2>
 
-        <div style="width:100%; max-width:450px; height:320px; margin:auto;">
+        <div class="chart-area">
             <canvas id="taskStatusChart"></canvas>
         </div>
 
-        <p id="chartMessage"
-           style="text-align:center; color:#666;">
-            Loading task chart...
-        </p>
+        <p id="chartMessage" class="chart-message">Loading task chart...</p>
     </section>
 
     <section class="panel">
@@ -491,52 +552,33 @@
                 </thead>
 
                 <tbody>
-
                 <tr th:each="task : ${tasks}">
                     <td th:text="${task.id}">1</td>
-
                     <td th:text="${task.title}">Task Title</td>
-
-                    <td th:text="${task.description != null ? task.description : '-'}">
-                        Description
-                    </td>
+                    <td th:text="${task.description != null ? task.description : '-'}">Description</td>
 
                     <td>
                         <span th:if="${task.teamMember != null}"
-                              th:text="${task.teamMember.name}">
-                            Team Member
-                        </span>
-
-                        <span th:unless="${task.teamMember != null}">
-                            Unassigned
-                        </span>
+                              th:text="${task.teamMember.name}">Team Member</span>
+                        <span th:unless="${task.teamMember != null}">Unassigned</span>
                     </td>
 
                     <td>
                         <span class="status-badge"
                               th:classappend="${task.status != null and task.status.equalsIgnoreCase('Completed') ? ' status-completed' : (task.status != null and task.status.equalsIgnoreCase('In Progress') ? ' status-progress' : ' status-pending')}"
-                              th:text="${task.status != null ? task.status : 'Not Started'}">
-                            Status
-                        </span>
+                              th:text="${task.status != null ? task.status : 'Not Started'}">Status</span>
                     </td>
 
                     <td>
                         <span th:classappend="${task.priority != null and task.priority.equalsIgnoreCase('High') ? ' priority-high' : (task.priority != null and task.priority.equalsIgnoreCase('Medium') ? ' priority-medium' : (task.priority != null and task.priority.equalsIgnoreCase('Low') ? ' priority-low' : ''))}"
-                              th:text="${task.priority != null ? task.priority : '-'}">
-                            Priority
-                        </span>
+                              th:text="${task.priority != null ? task.priority : '-'}">Priority</span>
                     </td>
 
                     <td>
-                        <span th:if="${task.deadline == null}">
-                            Not set
-                        </span>
-
+                        <span th:if="${task.deadline == null}">Not set</span>
                         <span th:if="${task.deadline != null}"
                               th:text="${#temporals.format(task.deadline, 'dd MMM yyyy')}"
-                              th:classappend="${task.status == null or !task.status.equalsIgnoreCase('Completed') ? (task.deadline.isBefore(T(java.time.LocalDate).now()) ? ' deadline-overdue' : (task.deadline.isBefore(T(java.time.LocalDate).now().plusDays(3)) ? ' deadline-soon' : '')) : ''}">
-                            Deadline
-                        </span>
+                              th:classappend="${task.status == null or !task.status.equalsIgnoreCase('Completed') ? (task.deadline.isBefore(T(java.time.LocalDate).now()) ? ' deadline-overdue' : (task.deadline.isBefore(T(java.time.LocalDate).now().plusDays(3)) ? ' deadline-soon' : '')) : ''}">Deadline</span>
                     </td>
                 </tr>
 
@@ -546,15 +588,12 @@
                         Add a task and assign it to this project to see it here.
                     </td>
                 </tr>
-
                 </tbody>
             </table>
         </div>
 
-        <p style="margin-top:22px;">
-            <a class="button" th:href="@{/tasks}">
-                + Manage Project Tasks
-            </a>
+        <p style="margin-top: 24px;">
+            <a class="button" th:href="@{/tasks}">+ Manage Project Tasks</a>
         </p>
     </section>
 
@@ -566,13 +605,12 @@
 
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function () {
-
         const message = document.getElementById('chartMessage');
         const canvas = document.getElementById('taskStatusChart');
 
-        const completed = Number(/*[[${completedCount}]]*/ 0);
-        const inProgress = Number(/*[[${inProgressCount}]]*/ 0);
-        const notStarted = Number(/*[[${notStartedCount}]]*/ 0);
+        const completed = Number(/*[[${completedCount}]]*/ 0) || 0;
+        const inProgress = Number(/*[[${inProgressCount}]]*/ 0) || 0;
+        const notStarted = Number(/*[[${notStartedCount}]]*/ 0) || 0;
 
         function showMessage(text) {
             if (message) {
@@ -599,28 +637,32 @@
                         data: [completed, inProgress, notStarted],
                         backgroundColor: ['#23966b', '#e3a008', '#718096'],
                         borderColor: '#ffffff',
-                        borderWidth: 2
+                        borderWidth: 3,
+                        hoverOffset: 8
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    cutout: '62%',
                     plugins: {
                         legend: {
                             display: true,
-                            position: 'bottom'
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
                         }
                     }
                 }
             });
 
-            showMessage(
-                'Total tasks: ' + (completed + inProgress + notStarted)
-            );
-
+            showMessage('Total tasks: ' + (completed + inProgress + notStarted));
         } catch (error) {
             console.error('Chart error:', error);
-            showMessage('Chart error: ' + error.message);
+            showMessage('Unable to display the task chart.');
         }
     });
 </script>

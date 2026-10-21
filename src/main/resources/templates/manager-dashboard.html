@@ -2,98 +2,435 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Manager Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Manager Dashboard | Project Management System</title>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        body {
+
+        * {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f2f5fa;
-            color: #1d2b45;
+            padding: 0;
+            box-sizing: border-box;
         }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --navy: #172554;
+            --background: #f4f7fc;
+            --text: #263247;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+
         header {
-            background: #172b4d;
-            color: white;
-            padding: 22px 30px;
+            background: linear-gradient(135deg, #172554, #1e40af);
+            color: var(--white);
+            padding: 24px 5%;
+            box-shadow: 0 4px 18px rgba(23, 37, 84, 0.18);
         }
-        main { padding: 25px; }
+
+        header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: #dbeafe;
+            font-size: 15px;
+            margin-bottom: 18px;
+        }
+
+
+        nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        nav a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 9px 14px;
+            border-radius: 7px;
+            transition: background 0.2s ease;
+        }
+
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        nav form {
+            display: inline-flex;
+            margin: 0;
+        }
+
+        nav button {
+            background: #ef4444;
+            color: var(--white);
+            border: none;
+            padding: 10px 17px;
+            border-radius: 7px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        nav button:hover {
+            background: #dc2626;
+        }
+
+
+        main {
+            max-width: 1450px;
+            margin: 32px auto;
+            padding: 0 25px;
+        }
+
+
         .cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 30px;
         }
-        .card, section {
-            background: white;
+
+        .card {
+            background: var(--white);
+            border-radius: 13px;
+            padding: 23px;
+            margin-bottom: 0;
+            box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+            border: 1px solid #edf1f7;
+            border-top: 4px solid var(--primary);
+            transition: transform 0.25s ease,
+            box-shadow 0.25s ease;
+        }
+
+        .card:nth-child(2) {
+            border-top-color: #7c3aed;
+        }
+
+        .card:nth-child(3) {
+            border-top-color: #16a34a;
+        }
+
+        .card:nth-child(4) {
+            border-top-color: #0891b2;
+        }
+
+        .card:nth-child(5) {
+            border-top-color: #d97706;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.1);
+        }
+
+        .card p {
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .number {
+            font-size: 34px;
+            font-weight: 800;
+            line-height: 1.2;
+            color: var(--navy);
+        }
+
+        section {
+            background: var(--white);
+            border-radius: 14px;
+            padding: 28px;
+            margin-bottom: 28px;
+            box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+            border: 1px solid #edf1f7;
+        }
+
+        section h2 {
+            color: var(--navy);
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 22px;
+            padding-bottom: 13px;
+            border-bottom: 2px solid #eff4ff;
+        }
+
+
+        .chart {
+            position: relative;
+            width: 100%;
+            max-width: 430px;
+            height: 320px;
+            margin: 0 auto;
+        }
+
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px #0000000d;
+            -webkit-overflow-scrolling: touch;
         }
-        .number { font-size: 28px; font-weight: bold; }
-        .chart { max-width: 420px; margin: 15px auto; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td {
+
+        table {
+            width: 100%;
+            min-width: 750px;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: var(--white);
+        }
+
+        th,
+        td {
             text-align: left;
-            padding: 11px;
-            border-bottom: 1px solid #e5e9f0;
+            padding: 15px 14px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            vertical-align: middle;
         }
-        th { background: #edf2f9; }
-        .table-wrap { overflow-x: auto; }
-        a { color: #1769aa; }
-        @media (max-width: 600px) {
-            main { padding: 12px; }
-            header { padding: 18px; }
+
+        th {
+            background: #eff4ff;
+            color: var(--navy);
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        td {
+            color: #334155;
+        }
+
+        tbody tr:hover {
+            background: #f8faff;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+
+        td[colspan] {
+            color: var(--muted);
+            text-align: center;
+            padding: 28px 15px;
+            font-weight: 600;
+        }
+
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 3px solid #93c5fd;
+            outline-offset: 3px;
+        }
+
+
+        footer {
+            text-align: center;
+            color: var(--muted);
+            background: var(--white);
+            border-top: 1px solid var(--border);
+            padding: 22px 15px;
+            margin-top: 35px;
+            font-size: 13px;
+        }
+
+
+        @media (max-width: 1100px) {
+            .cards {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 750px) {
+            .cards {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            main {
+                padding: 0 16px;
+                margin: 24px auto;
+            }
+
+            section {
+                padding: 22px;
+            }
+
+            header {
+                padding: 22px;
+            }
+
+            header h1 {
+                font-size: 25px;
+            }
+        }
+
+
+        @media (max-width: 480px) {
+            .cards {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .number {
+                font-size: 30px;
+            }
+
+            header {
+                padding: 18px;
+            }
+
+            header h1 {
+                font-size: 22px;
+            }
+
+            nav {
+                gap: 7px;
+            }
+
+            nav a {
+                padding: 8px 10px;
+                font-size: 13px;
+            }
+
+            nav button {
+                padding: 9px 12px;
+            }
+
+            main {
+                padding: 0 12px;
+                margin: 20px auto;
+            }
+
+            section {
+                padding: 17px;
+                margin-bottom: 20px;
+            }
+
+            section h2 {
+                font-size: 19px;
+            }
+
+            .chart {
+                height: 270px;
+            }
+
+            th,
+            td {
+                padding: 12px;
+                font-size: 13px;
+            }
         }
     </style>
 </head>
+
 <body>
+
 <header>
-    <h1>Manager Dashboard</h1>
-    <p th:text="'Welcome, ' + ${manager.fullName}">Welcome</p>
+    <h1>Project Management System</h1>
+
+    <p th:text="'Welcome, ' + ${manager.fullName}">
+        Welcome
+    </p>
+
     <nav>
-        <a href="/projects" style="color:white">Projects</a> |
-        <a href="/tasks" style="color:white">Tasks</a> |
-        <a href="/team" style="color:white">Team Members</a>
-        <form action="/logout" method="post" style="display:inline">
+        <a th:href="@{/projects}">Projects</a>
+        <a th:href="@{/tasks}">Tasks</a>
+        <a th:href="@{/team}">Team Members</a>
+
+        <form th:action="@{/logout}" method="post">
             <button type="submit">Logout</button>
         </form>
     </nav>
 </header>
 
 <main>
+
+
     <div class="cards">
+
         <div class="card">
             <p>Total Projects</p>
-            <div class="number" th:text="${projectCount}">0</div>
+            <div class="number"
+                 th:text="${projectCount != null ? projectCount : 0}">
+                0
+            </div>
         </div>
+
         <div class="card">
             <p>Total Tasks</p>
-            <div class="number" th:text="${taskCount}">0</div>
+            <div class="number"
+                 th:text="${taskCount != null ? taskCount : 0}">
+                0
+            </div>
         </div>
+
         <div class="card">
             <p>Completed Tasks</p>
-            <div class="number" th:text="${completedCount}">0</div>
+            <div class="number"
+                 th:text="${completedCount != null ? completedCount : 0}">
+                0
+            </div>
         </div>
+
         <div class="card">
             <p>In Progress</p>
-            <div class="number" th:text="${inProgressCount}">0</div>
+            <div class="number"
+                 th:text="${inProgressCount != null ? inProgressCount : 0}">
+                0
+            </div>
         </div>
+
         <div class="card">
             <p>Pending Tasks</p>
-            <div class="number" th:text="${pendingCount}">0</div>
+            <div class="number"
+                 th:text="${pendingCount != null ? pendingCount : 0}">
+                0
+            </div>
         </div>
+
     </div>
+
 
     <section>
         <h2>Task Progress</h2>
+
         <div class="chart">
             <canvas id="taskChart"></canvas>
         </div>
     </section>
 
+
     <section>
         <h2>Project Details</h2>
+
         <div class="table-wrap">
             <table>
                 <thead>
@@ -104,23 +441,29 @@
                     <th>Deadline</th>
                 </tr>
                 </thead>
+
                 <tbody>
                 <tr th:each="project : ${projects}">
-                    <td th:text="${project.name}"></td>
-                    <td th:text="${project.description}"></td>
-                    <td th:text="${project.status}"></td>
-                    <td th:text="${project.deadline}"></td>
+                    <td th:text="${project.name}">Project name</td>
+                    <td th:text="${project.description}">Description</td>
+                    <td th:text="${project.status}">Status</td>
+                    <td th:text="${project.deadline}">Deadline</td>
                 </tr>
-                <tr th:if="${#lists.isEmpty(projects)}">
-                    <td colspan="4">No projects found in this workspace.</td>
+
+                <tr th:if="${projects == null or #lists.isEmpty(projects)}">
+                    <td colspan="4">
+                        No projects found in this workspace.
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </section>
 
+
     <section>
         <h2>All Workspace Tasks and Assigned Employees</h2>
+
         <div class="table-wrap">
             <table>
                 <thead>
@@ -134,42 +477,112 @@
                     <th>Description</th>
                 </tr>
                 </thead>
+
                 <tbody>
                 <tr th:each="task : ${tasks}">
-                    <td th:text="${task.title}"></td>
-                    <td th:text="${task.project != null ? task.project.name : 'Not assigned'}"></td>
-                    <td th:text="${task.teamMember != null ? task.teamMember.name : 'Unassigned'}"></td>
-                    <td th:text="${task.priority}"></td>
-                    <td th:text="${task.status}"></td>
-                    <td th:text="${task.deadline}"></td>
-                    <td th:text="${task.description}"></td>
+                    <td th:text="${task.title}">Task title</td>
+
+                    <td th:text="${task.project != null
+                        ? task.project.name : 'Not assigned'}">
+                        Project
+                    </td>
+
+                    <td th:text="${task.teamMember != null
+                        ? task.teamMember.name : 'Unassigned'}">
+                        Employee
+                    </td>
+
+                    <td th:text="${task.priority != null
+                        ? task.priority : '-'}">
+                        Priority
+                    </td>
+
+                    <td th:text="${task.status != null
+                        ? task.status : 'Pending'}">
+                        Status
+                    </td>
+
+                    <td th:text="${task.deadline != null
+                        ? task.deadline : '-'}">
+                        Deadline
+                    </td>
+
+                    <td th:text="${task.description != null
+                        ? task.description : '-'}">
+                        Description
+                    </td>
                 </tr>
-                <tr th:if="${#lists.isEmpty(tasks)}">
-                    <td colspan="7">No tasks found in this workspace.</td>
+
+                <tr th:if="${tasks == null or #lists.isEmpty(tasks)}">
+                    <td colspan="7">
+                        No tasks found in this workspace.
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </section>
+
 </main>
 
+<footer>
+    Project Task Management System
+</footer>
+
+
 <script th:inline="javascript">
-    const completed = /*[[${completedCount}]]*/ 0;
-    const inProgress = /*[[${inProgressCount}]]*/ 0;
-    const pending = /*[[${pendingCount}]]*/ 0;
+    const completed = Number(/*[[${completedCount}]]*/ 0) || 0;
+    const inProgress = Number(/*[[${inProgressCount}]]*/ 0) || 0;
+    const pending = Number(/*[[${pendingCount}]]*/ 0) || 0;
 
     new Chart(document.getElementById('taskChart'), {
         type: 'pie',
+
         data: {
             labels: ['Completed', 'In Progress', 'Pending'],
+
             datasets: [{
-                data: [completed, inProgress, pending]
+                data: [completed, inProgress, pending],
+                backgroundColor: [
+                    '#16a34a',
+                    '#2563eb',
+                    '#f59e0b'
+                ],
+                borderColor: '#ffffff',
+                borderWidth: 3,
+                hoverOffset: 8
             }]
         },
+
         options: {
-            responsive: true
+            responsive: true,
+            maintainAspectRatio: false,
+
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true,
+                        font: {
+                            size: 13,
+                            weight: 'bold'
+                        }
+                    }
+                },
+
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': '
+                                + context.raw + ' task(s)';
+                        }
+                    }
+                }
+            }
         }
     });
 </script>
+
 </body>
 </html>

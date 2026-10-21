@@ -3,87 +3,438 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard | Project Task Management System</title>
+
     <style>
-        body { margin:0; font-family:Arial,sans-serif; background:#f1f5fa; color:#263449; }
-        header { background:#183153; color:white; padding:20px; }
-        main { max-width:1000px; margin:25px auto; padding:0 18px; }
-        section { background:white; padding:22px; border-radius:10px; margin-bottom:22px; }
-        h1,h2 { color:#183153; }
-        header h1 { color:white; margin:0; }
-        label { display:block; margin-top:12px; }
-        input,select { width:100%; box-sizing:border-box; padding:11px; margin-top:5px; border:1px solid #ccd5e0; border-radius:5px; }
-        button,.link { display:inline-block; margin-top:16px; padding:11px 15px; background:#183153; color:white; border:0; border-radius:5px; text-decoration:none; cursor:pointer; }
-        table { width:100%; border-collapse:collapse; }
-        th,td { padding:11px; text-align:left; border-bottom:1px solid #ddd; }
-        th { background:#183153; color:white; }
-        .table-wrap { overflow-x:auto; }
-        .error { color:#b42318; }
-        .success { color:#18794e; }
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #eaf1ff, #f7f9ff, #dce8ff);
+            color: #263449;
+            min-height: 100vh;
+        }
+
+
+        header {
+            background: linear-gradient(135deg, #142b4d, #2859a5);
+            color: white;
+            padding: 28px 20px;
+            box-shadow: 0 5px 20px rgba(24, 49, 83, 0.15);
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        header h1 {
+            color: white;
+            font-size: clamp(25px, 4vw, 36px);
+            font-weight: 900;
+            letter-spacing: 1px;
+            margin: 0 0 8px;
+        }
+
+        header p {
+            color: #dce8ff;
+            font-size: 15px;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .brand {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #bcd3ff;
+            margin-bottom: 10px;
+        }
+
+
+        main {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px 30px;
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: minmax(280px, 0.85fr)
+                                   minmax(0, 1.4fr);
+            gap: 24px;
+            align-items: start;
+        }
+
+        section {
+            min-width: 0;
+            background: #ffffff;
+            padding: 26px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 35px rgba(24, 49, 83, 0.08);
+            border: 1px solid #edf1f8;
+        }
+
+        .section-heading {
+            margin-bottom: 22px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e8edf5;
+        }
+
+        h2 {
+            color: #183153;
+            font-size: 21px;
+            font-weight: 800;
+            margin: 0 0 7px;
+        }
+
+        .section-heading p {
+            color: #718096;
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+
+        label {
+            display: block;
+            margin-top: 17px;
+            color: #34445c;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        input,
+        select {
+            display: block;
+            width: 100%;
+            padding: 12px 13px;
+            margin-top: 7px;
+            border: 1px solid #d5deeb;
+            border-radius: 8px;
+            background: #fbfcff;
+            color: #263449;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #3468c0;
+            box-shadow: 0 0 0 3px rgba(52, 104, 192, 0.12);
+            background: #ffffff;
+        }
+
+        button,
+        .link {
+            display: inline-block;
+            padding: 12px 18px;
+            margin-top: 22px;
+            background: linear-gradient(135deg, #183153, #2859a5);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 800;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover,
+        .link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 16px rgba(24, 49, 83, 0.2);
+        }
+
+        .create-button {
+            width: 100%;
+        }
+
+
+        .error {
+            color: #b42318;
+            background: #fff0ef;
+            border: 1px solid #fbd5d2;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .success {
+            color: #18794e;
+            background: #eaf8f0;
+            border: 1px solid #c5ead4;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid #e5eaf2;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 360px;
+            border-collapse: collapse;
+            background: #ffffff;
+        }
+
+        th,
+        td {
+            padding: 14px 13px;
+            text-align: left;
+            border-bottom: 1px solid #e8edf5;
+            font-size: 13px;
+        }
+
+        th {
+            background: #183153;
+            color: white;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f7f9fd;
+        }
+
+        tbody tr:hover {
+            background: #edf4ff;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .role {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            background: #eaf1ff;
+            color: #2455a4;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .empty {
+            color: #718096;
+            text-align: center;
+            padding: 22px;
+        }
+
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 0;
+        }
+
+        .logout-button {
+            background: #ffffff;
+            color: #183153;
+            border: 1px solid #cbd7e8;
+            margin-top: 0;
+        }
+
+        .logout-button:hover {
+            background: #edf4ff;
+        }
+
+        footer {
+            text-align: center;
+            padding: 0 16px 25px;
+            color: #8290a5;
+            font-size: 12px;
+        }
+
+
+        @media (max-width: 800px) {
+            .section-grid {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            section {
+                padding: 22px;
+            }
+
+            main {
+                margin-top: 22px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 23px 18px;
+            }
+
+            main {
+                padding: 0 13px 25px;
+            }
+
+            section {
+                padding: 19px 16px;
+                border-radius: 12px;
+            }
+
+            header h1 {
+                letter-spacing: 0.3px;
+            }
+
+            .actions {
+                justify-content: stretch;
+            }
+
+            .logout-button {
+                width: 100%;
+            }
+        }
     </style>
 </head>
+
 <body>
+
 <header>
-    <h1>Admin Dashboard</h1>
-    <p>Manage user accounts and your team.</p>
+    <div class="header-content">
+        <div class="brand">Project Task Management System</div>
+        <h1>Admin Dashboard</h1>
+        <p>Manage user accounts, assign roles, and organize your team.</p>
+    </div>
 </header>
 
 <main>
-    <section>
-        <h2>Create Manager or Employee</h2>
+    <div class="section-grid">
 
-        <p class="error" th:if="${error}" th:text="${error}"></p>
-        <p class="success" th:if="${param.created}">
-            Account created successfully.
-        </p>
 
-        <form th:action="@{/admin/users/create}" method="post">
-            <label for="fullName">Full name</label>
-            <input id="fullName" name="fullName" required>
+        <section>
+            <div class="section-heading">
+                <h2>Create User Account</h2>
+                <p>Add a new manager or employee to your team.</p>
+            </div>
 
-            <label for="username">Unique username</label>
-            <input id="username" name="username" required>
+            <p class="error"
+               th:if="${error}"
+               th:text="${error}"></p>
 
-            <label for="password">Temporary password (minimum 8 characters)</label>
-            <input id="password" name="password" type="password"
-                   minlength="8" required>
+            <p class="success" th:if="${param.created}">
+                Account created successfully.
+            </p>
 
-            <label for="role">User role</label>
-            <select id="role" name="role" required>
-                <option value="">Select role</option>
-                <option value="MANAGER">Manager</option>
-                <option value="EMPLOYEE">Employee</option>
-            </select>
+            <form th:action="@{/admin/users/create}" method="post">
 
-            <button type="submit">Create Account</button>
+                <label for="fullName">Full Name</label>
+                <input
+                        id="fullName"
+                        name="fullName"
+                        type="text"
+                        placeholder="Enter full name"
+                        autocomplete="name"
+                        required>
+
+                <label for="username">Unique Username</label>
+                <input
+                        id="username"
+                        name="username"
+                        type="text"
+                        placeholder="Choose a username"
+                        autocomplete="off"
+                        required>
+
+                <label for="password">
+                    Temporary Password (minimum 8 characters)
+                </label>
+                <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        placeholder="Enter temporary password"
+                        minlength="8"
+                        autocomplete="new-password"
+                        required>
+
+                <label for="role">User Role</label>
+                <select id="role" name="role" required>
+                    <option value="">Select a role</option>
+                    <option value="MANAGER">Manager</option>
+                    <option value="EMPLOYEE">Employee</option>
+                </select>
+
+                <button class="create-button" type="submit">
+                    + Create Account
+                </button>
+
+            </form>
+        </section>
+
+
+        <section>
+            <div class="section-heading">
+                <h2>Registered Accounts</h2>
+                <p>View the users currently registered in the system.</p>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.fullName}"></td>
+                        <td th:text="${user.username}"></td>
+                        <td>
+                            <span class="role"
+                                  th:text="${user.role}"></span>
+                        </td>
+                    </tr>
+
+                    <tr th:if="${#lists.isEmpty(users)}">
+                        <td colspan="3" class="empty">
+                            No registered accounts found.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+
+
+    <div class="actions">
+        <form th:action="@{/logout}" method="post">
+            <button class="logout-button" type="submit">
+                Logout
+            </button>
         </form>
-    </section>
+    </div>
 
-    <section>
-        <h2>Registered Accounts</h2>
-        <div class="table-wrap">
-            <table>
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Username</th>
-                    <th>Role</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="user : ${users}">
-                    <td th:text="${user.fullName}"></td>
-                    <td th:text="${user.username}"></td>
-                    <td th:text="${user.role}"></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <form th:action="@{/logout}" method="post" style="display:inline;">
-        <button type="submit">Logout</button>
-    </form>
 </main>
+
+<footer>
+    © Project Task Management System
+</footer>
+
 </body>
 </html>

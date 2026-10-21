@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,92 +7,250 @@
     <title>Team Members</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #183153;
+            --primary-dark: #102544;
+            --primary-light: #28558b;
+            --accent: #3b82f6;
+            --background: #f3f6fc;
+            --text: #26364b;
+            --muted: #718096;
+            --border: #e3eaf3;
+            --white: #ffffff;
+            --shadow: 0 8px 24px rgba(24, 49, 83, 0.07);
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
             margin: 0;
+            min-height: 100vh;
         }
 
         .navbar {
-            background-color: #172554;
-            color: white;
-            padding: 18px 35px;
+            background: linear-gradient(120deg, #102544, #234a7b);
+            color: var(--white);
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 18px rgba(16, 37, 68, 0.15);
         }
 
         .navbar h1 {
             margin: 0;
-        }
-
-        .container {
-            padding: 30px;
-        }
-
-        .box {
-            background: white;
-            padding: 25px;
-            margin-bottom: 25px;
-            border-radius: 10px;
-        }
-
-        h2 {
-            color: #172554;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0 15px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        button {
-            background-color: #172554;
-            color: white;
-            padding: 12px 22px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-            text-align: left;
-        }
-
-        th {
-            background-color: #172554;
-            color: white;
-        }
-
-        .navbar {
-            background-color: #172554;
-            color: white;
-            padding: 18px 35px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            font-size: 23px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
         }
 
         .nav-links {
             display: flex;
-            gap: 20px;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .nav-links a {
-            color: white;
+            color: #edf4ff;
             text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 10px 14px;
+            border-radius: 8px;
+            transition: background 0.25s ease, transform 0.25s ease;
         }
 
         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: 38px auto;
+            padding: 0 25px;
+        }
+
+        .box {
+            background: var(--white);
+            padding: 30px;
+            margin-bottom: 28px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 0 25px;
+            padding-left: 13px;
+            border-left: 4px solid var(--accent);
+        }
+
+        #memberSearch {
+            display: block;
+            width: 100%;
+            padding: 14px 16px;
+            margin: 0 0 24px;
+            border: 1px solid #d3dce8;
+            border-radius: 9px;
+            background: #fbfdff;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        #memberSearch:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+            background: var(--white);
+        }
+
+        #memberSearch::placeholder {
+            color: #94a3b8;
+        }
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 650px;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: var(--white);
+        }
+
+        th,
+        td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #e9eef5;
+            font-size: 14px;
+        }
+
+        th {
+            background: #edf3fb;
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            transition: background 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: #f5f9ff;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        td {
+            color: #475569;
+            overflow-wrap: anywhere;
+        }
+
+        td:nth-child(2) {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        td a {
+            display: inline-block;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 2px 4px;
+            transition: color 0.2s ease;
+        }
+
+        td a:hover {
+            color: #153e83;
             text-decoration: underline;
+        }
+
+        @media (max-width: 800px) {
+            .navbar {
+                padding: 20px 4%;
+            }
+
+            .container {
+                margin: 25px auto;
+                padding: 0 18px;
+            }
+
+            .box {
+                padding: 24px 20px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 18px 20px;
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 14px;
+            }
+
+            .navbar h1 {
+                font-size: 20px;
+                line-height: 1.4;
+            }
+
+            .nav-links {
+                gap: 5px;
+            }
+
+            .nav-links a {
+                font-size: 13px;
+                padding: 8px 10px;
+            }
+
+            .container {
+                margin: 20px auto;
+                padding: 0 12px;
+            }
+
+            .box {
+                padding: 21px 15px;
+                border-radius: 12px;
+            }
+
+            h2 {
+                font-size: 21px;
+            }
+
+            #memberSearch {
+                padding: 12px;
+            }
+
+            th,
+            td {
+                padding: 12px;
+                font-size: 13px;
+            }
         }
     </style>
 </head>
@@ -100,22 +258,17 @@
 <body>
 
 <div class="navbar">
-
     <h1>Project Task Management System</h1>
 
     <div class="nav-links">
-
         <a href="/">Dashboard</a>
         <a href="/projects">Projects</a>
         <a href="/tasks">Tasks</a>
         <a href="/team">Team Members</a>
-
     </div>
-
 </div>
 
 <div class="container">
-
 
     <div class="box">
 
@@ -124,43 +277,40 @@
         <input type="text"
                id="memberSearch"
                placeholder="Search team members..."
-               onkeyup="searchMembers()"
-               style="width:100%; padding:12px; margin-bottom:15px; box-sizing:border-box;">
+               onkeyup="searchMembers()">
 
-        <table id="memberTable">
+        <div class="table-wrap">
+            <table id="memberTable">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
 
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Action</th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <tr th:each="member : ${members}">
-
-                <td th:text="${member.id}"></td>
-                <td th:text="${member.name}"></td>
-                <td th:text="${member.email}"></td>
-                <td th:text="${member.role}"></td>
-                <td>
-                    <a th:href="@{'/team/edit/' + ${member.id}}">
-                        Edit
-                    </a>
-                    |
-                    <a th:href="@{'/team/delete/' + ${member.id}}"
-                       onclick="return confirm('Are you sure you want to delete this team member?')">
-                        Delete
-                    </a>
-                </td>
-
-            </tr>
-            </tbody>
-
-        </table>
+                <tbody>
+                <tr th:each="member : ${members}">
+                    <td th:text="${member.id}"></td>
+                    <td th:text="${member.name}"></td>
+                    <td th:text="${member.email}"></td>
+                    <td th:text="${member.role}"></td>
+                    <td>
+                        <a th:href="@{'/team/edit/' + ${member.id}}">
+                            Edit
+                        </a>
+                        |
+                        <a th:href="@{'/team/delete/' + ${member.id}}"
+                           onclick="return confirm('Are you sure you want to delete this team member?')">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
     </div>
 
@@ -168,14 +318,12 @@
 
 <script>
     function searchMembers() {
-
         let input = document.getElementById("memberSearch");
         let filter = input.value.toLowerCase();
 
         let rows = document.querySelectorAll("#memberTable tbody tr");
 
         rows.forEach(function(row) {
-
             let name = row.cells[1].textContent.toLowerCase();
 
             if (name.includes(filter)) {
@@ -183,7 +331,6 @@
             } else {
                 row.style.display = "none";
             }
-
         });
     }
 </script>

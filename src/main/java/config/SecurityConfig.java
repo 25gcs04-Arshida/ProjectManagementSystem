@@ -28,6 +28,7 @@ public class SecurityConfig {
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider =
                 new DaoAuthenticationProvider(userDetailsService);
+
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
@@ -40,6 +41,8 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
 
                 .authorizeHttpRequests(auth -> auth
+
+                        // Public pages and resources
                         .requestMatchers(
                                 "/login",
                                 "/register-admin",
@@ -49,16 +52,24 @@ public class SecurityConfig {
                                 "/error"
                         ).permitAll()
 
+                        // Admin-only pages
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+
+                        // Employee-only pages
                         .requestMatchers("/employee/**").hasRole("EMPLOYEE")
 
+                        // Manager-only pages
                         .requestMatchers(
-                                "/projects", "/projects/**",
-                                "/tasks", "/tasks/**",
-                                "/team", "/team/**",
-                                "/manager", "/manager/**"
+                                "/manager/**",
+                                "/projects",
+                                "/projects/**",
+                                "/tasks",
+                                "/tasks/**",
+                                "/team",
+                                "/team/**"
                         ).hasRole("MANAGER")
 
+                        // Everything else requires authentication
                         .anyRequest().authenticated()
                 )
 
@@ -67,22 +78,30 @@ public class SecurityConfig {
                         .loginProcessingUrl("/login")
                         .usernameParameter("username")
                         .passwordParameter("password")
+
                         .successHandler((request, response, authentication) -> {
                             var authorities = authentication.getAuthorities();
 
                             if (authorities.stream().anyMatch(a ->
                                     a.getAuthority().equals("ROLE_ADMIN"))) {
+
                                 response.sendRedirect("/admin/dashboard");
+
                             } else if (authorities.stream().anyMatch(a ->
                                     a.getAuthority().equals("ROLE_MANAGER"))) {
+
                                 response.sendRedirect("/manager/dashboard");
+
                             } else if (authorities.stream().anyMatch(a ->
                                     a.getAuthority().equals("ROLE_EMPLOYEE"))) {
+
                                 response.sendRedirect("/employee/tasks");
+
                             } else {
                                 response.sendRedirect("/login?error");
                             }
                         })
+
                         .failureUrl("/login?error")
                         .permitAll()
                 )

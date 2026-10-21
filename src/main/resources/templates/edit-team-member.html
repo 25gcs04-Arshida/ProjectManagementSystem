@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Edit Team Member - Project Task Management System</title>
+    <title>Edit Team Member | Project Task Management System</title>
 
     <style>
         * {
@@ -12,145 +12,231 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
             margin: 0;
-            color: #333;
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #263449;
+            min-height: 100vh;
         }
 
         .navbar {
-            background-color: #172554;
+            background: linear-gradient(135deg, #142b4b, #24568d);
             color: white;
-            padding: 18px 30px;
+            padding: 20px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(20, 43, 75, 0.15);
         }
 
         .navbar h2 {
             margin: 0;
-            font-size: 22px;
+            font-size: 21px;
+            line-height: 1.5;
+        }
+
+        .navbar-links {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .navbar a {
             color: white;
             text-decoration: none;
-            margin-left: 18px;
+            padding: 9px 12px;
+            border-radius: 6px;
             font-size: 14px;
+            transition: background 0.2s ease;
         }
 
         .navbar a:hover {
-            color: #bfdbfe;
+            background: rgba(255, 255, 255, 0.15);
         }
 
         .container {
-            max-width: 600px;
-            margin: 45px auto;
-            padding: 0 18px;
+            width: calc(100% - 32px);
+            max-width: 650px;
+            margin: 40px auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #24568d;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
         }
 
         .form-card {
             background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(24, 49, 83, 0.08);
+            border: 1px solid #e8edf5;
         }
 
-        h1 {
-            color: #172554;
-            margin-top: 0;
-            margin-bottom: 8px;
-            font-size: 26px;
+        .form-heading {
+            margin-bottom: 30px;
+        }
+
+        .form-heading h1 {
+            color: #183153;
+            margin: 0 0 10px;
+            font-size: 28px;
         }
 
         .subtitle {
-            color: #64748b;
-            margin-bottom: 25px;
+            color: #718096;
+            margin: 0;
             font-size: 14px;
+            line-height: 1.7;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
+            margin-bottom: 9px;
+            color: #263449;
             font-size: 14px;
+            font-weight: 700;
         }
 
-        input,
-        select {
+        input {
+            display: block;
             width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            font-size: 15px;
-            background-color: white;
+            padding: 13px 14px;
+            border: 1px solid #d7dfeb;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            color: #263449;
+            background: white;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
-        input:focus,
-        select:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+        input:focus {
+            border-color: #356fc0;
+            box-shadow: 0 0 0 3px rgba(53, 111, 192, 0.12);
+        }
+
+        input::placeholder {
+            color: #a0aec0;
+        }
+
+        .form-note {
+            margin-top: 7px;
+            color: #718096;
+            font-size: 12px;
+            line-height: 1.5;
         }
 
         .buttons {
             display: flex;
+            flex-wrap: wrap;
             gap: 12px;
-            margin-top: 28px;
+            margin-top: 30px;
+            padding-top: 23px;
+            border-top: 1px solid #e8edf5;
         }
 
         .btn {
-            display: inline-block;
-            padding: 12px 20px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 45px;
+            padding: 12px 22px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
             text-align: center;
             text-decoration: none;
-            font-size: 15px;
             cursor: pointer;
             flex: 1;
+            transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .btn-update {
-            background-color: #1d4ed8;
             color: white;
+            background: linear-gradient(135deg, #24568d, #356fc0);
+            box-shadow: 0 4px 10px rgba(36, 86, 141, 0.15);
         }
 
         .btn-update:hover {
-            background-color: #1e40af;
+            background: #183f70;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(36, 86, 141, 0.22);
         }
 
         .btn-cancel {
-            background-color: #e2e8f0;
-            color: #1e293b;
+            color: #34445c;
+            background: #edf1f7;
         }
 
         .btn-cancel:hover {
-            background-color: #cbd5e1;
+            background: #e0e7f1;
         }
 
-        @media (max-width: 480px) {
+        .footer {
+            padding: 22px 15px;
+            text-align: center;
+            color: #718096;
+            font-size: 13px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
             .navbar {
-                padding: 16px;
+                padding: 17px 20px;
+                align-items: flex-start;
+            }
+
+            .navbar h2 {
+                font-size: 18px;
+            }
+
+            .navbar-links {
+                gap: 4px;
             }
 
             .navbar a {
-                margin-left: 0;
-                margin-right: 12px;
+                padding: 8px;
+                font-size: 13px;
+            }
+
+            .container {
+                margin: 25px auto;
             }
 
             .form-card {
-                padding: 22px;
+                padding: 24px 20px;
+                border-radius: 12px;
+            }
+
+            .form-heading h1 {
+                font-size: 24px;
             }
 
             .buttons {
                 flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
             }
         }
     </style>
@@ -161,7 +247,7 @@
 <nav class="navbar">
     <h2>Project Task Management System</h2>
 
-    <div>
+    <div class="navbar-links">
         <a th:href="@{/}">Home</a>
         <a th:href="@{/projects}">Projects</a>
         <a th:href="@{/tasks}">Tasks</a>
@@ -169,14 +255,18 @@
     </div>
 </nav>
 
-<div class="container">
+<main class="container">
 
-    <div class="form-card">
+    <a th:href="@{/team}" class="back-link">&larr; Back to Team</a>
 
-        <h1>Edit Team Member</h1>
-        <p class="subtitle">
-            Update the details of your team member below.
-        </p>
+    <section class="form-card">
+
+        <div class="form-heading">
+            <h1>Edit Team Member</h1>
+            <p class="subtitle">
+                Update the team member's personal details and role using the form below.
+            </p>
+        </div>
 
         <form th:action="@{/team/update}"
               th:object="${teamMember}"
@@ -186,29 +276,37 @@
 
             <div class="form-group">
                 <label for="name">Full Name</label>
-                <input type="text"
-                       id="name"
-                       th:field="*{name}"
-                       placeholder="Enter full name"
-                       required>
+                <input
+                        type="text"
+                        id="name"
+                        th:field="*{name}"
+                        placeholder="Enter full name"
+                        autocomplete="name"
+                        required>
             </div>
 
             <div class="form-group">
                 <label for="email">Email Address</label>
-                <input type="email"
-                       id="email"
-                       th:field="*{email}"
-                       placeholder="Enter email address"
-                       required>
+                <input
+                        type="email"
+                        id="email"
+                        th:field="*{email}"
+                        placeholder="Enter email address"
+                        autocomplete="email"
+                        required>
             </div>
 
             <div class="form-group">
                 <label for="role">Role</label>
-                <input type="text"
-                       id="role"
-                       th:field="*{role}"
-                       placeholder="Enter team role"
-                       required>
+                <input
+                        type="text"
+                        id="role"
+                        th:field="*{role}"
+                        placeholder="Enter team role"
+                        required>
+                <p class="form-note">
+                    Enter the team member's role in the project.
+                </p>
             </div>
 
             <div class="buttons">
@@ -223,9 +321,13 @@
 
         </form>
 
-    </div>
+    </section>
 
-</div>
+</main>
+
+<footer class="footer">
+    Project Task Management System
+</footer>
 
 </body>
 </html>
