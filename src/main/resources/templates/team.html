@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Team Members</title>
 
     <style>
@@ -32,50 +31,47 @@
             min-height: 100vh;
         }
 
-        .navbar {
+        header {
             background: linear-gradient(120deg, #102544, #234a7b);
             color: var(--white);
-            padding: 20px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
+            padding: 22px 5%;
             box-shadow: 0 4px 18px rgba(16, 37, 68, 0.15);
         }
 
-        .navbar h1 {
+        header h2 {
             margin: 0;
-            font-size: 23px;
+            font-size: 24px;
             font-weight: 700;
             letter-spacing: 0.2px;
         }
 
-        .nav-links {
+        nav {
+            background: #18365e;
+            padding: 10px 5%;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: flex-start;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
-        .nav-links a {
+        nav a {
             color: #edf4ff;
             text-decoration: none;
             font-size: 14px;
             font-weight: 500;
-            padding: 10px 14px;
-            border-radius: 8px;
-            transition: background 0.25s ease, transform 0.25s ease;
+            padding: 10px 15px;
+            border-radius: 7px;
+            transition: background 0.25s ease;
         }
 
-        .nav-links a:hover {
+        nav a:hover {
             background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-1px);
         }
 
         .container {
             max-width: 1250px;
-            margin: 38px auto;
+            margin: 35px auto;
             padding: 0 25px;
         }
 
@@ -88,7 +84,7 @@
             box-shadow: var(--shadow);
         }
 
-        h2 {
+        .page-title {
             color: var(--primary);
             font-size: 24px;
             font-weight: 700;
@@ -191,9 +187,19 @@
             text-decoration: underline;
         }
 
+        .empty-message {
+            padding: 25px;
+            text-align: center;
+            color: var(--muted);
+        }
+
         @media (max-width: 800px) {
-            .navbar {
+            header {
                 padding: 20px 4%;
+            }
+
+            nav {
+                padding: 10px 4%;
             }
 
             .container {
@@ -207,25 +213,23 @@
         }
 
         @media (max-width: 600px) {
-            .navbar {
+            header {
                 padding: 18px 20px;
-                align-items: flex-start;
-                flex-direction: column;
-                gap: 14px;
             }
 
-            .navbar h1 {
+            header h2 {
                 font-size: 20px;
                 line-height: 1.4;
             }
 
-            .nav-links {
-                gap: 5px;
+            nav {
+                padding: 9px 12px;
+                gap: 4px;
             }
 
-            .nav-links a {
+            nav a {
                 font-size: 13px;
-                padding: 8px 10px;
+                padding: 9px 10px;
             }
 
             .container {
@@ -238,7 +242,7 @@
                 border-radius: 12px;
             }
 
-            h2 {
+            .page-title {
                 font-size: 21px;
             }
 
@@ -257,27 +261,27 @@
 
 <body>
 
-<div class="navbar">
-    <h1>Project Task Management System</h1>
+<header>
+    <h2>Project Task Management System</h2>
+</header>
 
-    <div class="nav-links">
-        <a href="/">Dashboard</a>
-        <a href="/projects">Projects</a>
-        <a href="/tasks">Tasks</a>
-        <a href="/team">Team Members</a>
-    </div>
-</div>
+<nav>
+    <a th:href="@{/manager/dashboard}">Dashboard</a>
+    <a th:href="@{/projects}">Projects</a>
+    <a th:href="@{/tasks}">Tasks</a>
+    <a th:href="@{/team}">Team Members</a>
+</nav>
 
 <div class="container">
-
     <div class="box">
 
-        <h2>Team Members</h2>
+        <h2 class="page-title">Team Members</h2>
 
-        <input type="text"
-               id="memberSearch"
-               placeholder="Search team members..."
-               onkeyup="searchMembers()">
+        <input
+                type="text"
+                id="memberSearch"
+                placeholder="Search team members..."
+                onkeyup="searchMembers()">
 
         <div class="table-wrap">
             <table id="memberTable">
@@ -298,14 +302,10 @@
                     <td th:text="${member.email}"></td>
                     <td th:text="${member.role}"></td>
                     <td>
-                        <a th:href="@{'/team/edit/' + ${member.id}}">
-                            Edit
-                        </a>
+                        <a th:href="@{'/team/edit/' + ${member.id}}">Edit</a>
                         |
                         <a th:href="@{'/team/delete/' + ${member.id}}"
-                           onclick="return confirm('Are you sure you want to delete this team member?')">
-                            Delete
-                        </a>
+                           onclick="return confirm('Are you sure you want to delete this team member?')">Delete</a>
                     </td>
                 </tr>
                 </tbody>
@@ -313,14 +313,12 @@
         </div>
 
     </div>
-
 </div>
 
 <script>
     function searchMembers() {
         let input = document.getElementById("memberSearch");
         let filter = input.value.toLowerCase();
-
         let rows = document.querySelectorAll("#memberTable tbody tr");
 
         rows.forEach(function(row) {
