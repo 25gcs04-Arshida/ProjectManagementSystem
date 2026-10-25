@@ -1,13 +1,6 @@
 package com.projectmanagement.projecttaskmanagementsystem;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,6 +22,9 @@ public class AppUser implements UserDetails {
     private String username;
     private String password;
     private String role;
+
+    @jakarta.persistence.Column(length = 254)
+    private String email;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_admin_id")
@@ -82,6 +78,10 @@ public class AppUser implements UserDetails {
     public void setRole(String role) {
         this.role = role;
     }
+
+    public String getEmail(){ return email;}
+
+    public void setEmail(String email){ this.email = email;}
 
     public AppUser getOwnerAdmin() {
         return ownerAdmin;

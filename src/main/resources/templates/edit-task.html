@@ -1,349 +1,107 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Task | Project Task Management System</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Edit Task</title>
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f3f6fb;
-            color: #263449;
-            min-height: 100vh;
-        }
-
-        .navbar {
-            background: linear-gradient(135deg, #142b4b, #24568d);
-            color: white;
-            padding: 20px 5%;
-            box-shadow: 0 4px 15px rgba(20, 43, 75, 0.15);
-        }
-
-        .navbar h1 {
-            margin: 0;
-            font-size: 22px;
-            font-weight: 700;
-        }
-
-        .container {
-            width: calc(100% - 32px);
-            max-width: 720px;
-            margin: 40px auto;
-            background: white;
-            padding: 35px;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(24, 49, 83, 0.08);
-            border: 1px solid #e8edf5;
-        }
-
-        .back-link {
-            display: inline-block;
-            color: #24568d;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 22px;
-        }
-
-        .back-link:hover {
-            text-decoration: underline;
-        }
-
-        .heading {
-            margin-bottom: 28px;
-        }
-
-        .heading h2 {
-            color: #183153;
-            margin: 0 0 10px;
-            font-size: 28px;
-        }
-
-        .heading p {
-            color: #718096;
-            font-size: 14px;
-            line-height: 1.6;
-            margin: 0;
-        }
-
-        .form-group {
-            margin-bottom: 21px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 9px;
-            color: #263449;
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        input,
-        textarea,
-        select {
-            display: block;
-            width: 100%;
-            padding: 13px 14px;
-            font-family: inherit;
-            font-size: 14px;
-            color: #263449;
-            background: #fff;
-            border: 1px solid #d7dfeb;
-            border-radius: 8px;
-            outline: none;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        input:focus,
-        textarea:focus,
-        select:focus {
-            border-color: #356fc0;
-            box-shadow: 0 0 0 3px rgba(53, 111, 192, 0.12);
-        }
-
-        input[type="date"] {
-            min-height: 45px;
-        }
-
-        textarea {
-            min-height: 120px;
-            resize: vertical;
-            line-height: 1.6;
-        }
-
-        select {
-            cursor: pointer;
-        }
-
-        .form-note {
-            color: #718096;
-            font-size: 12px;
-            line-height: 1.5;
-            margin-top: 7px;
-        }
-
-        .form-actions {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 30px;
-            padding-top: 22px;
-            border-top: 1px solid #e8edf5;
-        }
-
-        .button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 44px;
-            padding: 12px 21px;
-            border: none;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 14px;
-            font-weight: 700;
-            text-decoration: none;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-        }
-
-        .button-primary {
-            color: white;
-            background: linear-gradient(135deg, #24568d, #356fc0);
-            box-shadow: 0 4px 10px rgba(36, 86, 141, 0.15);
-        }
-
-        .button-primary:hover {
-            background: #183f70;
-            transform: translateY(-1px);
-            box-shadow: 0 6px 14px rgba(36, 86, 141, 0.22);
-        }
-
-        .button-secondary {
-            color: #34445c;
-            background: #edf1f7;
-        }
-
-        .button-secondary:hover {
-            background: #e0e7f1;
-        }
-
-        .footer {
-            padding: 22px 15px;
-            text-align: center;
-            color: #718096;
-            font-size: 13px;
-        }
-
-        @media (max-width: 600px) {
-            .navbar {
-                padding: 18px 20px;
-            }
-
-            .navbar h1 {
-                font-size: 18px;
-                line-height: 1.5;
-            }
-
-            .container {
-                margin: 24px auto;
-                padding: 23px 19px;
-                border-radius: 12px;
-            }
-
-            .heading h2 {
-                font-size: 24px;
-            }
-
-            .form-actions {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .button {
-                width: 100%;
-            }
-        }
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: Arial, sans-serif; background: #f3f6fc; color: #26364b; }
+        header { background: #183153; color: white; padding: 22px 5%; }
+        nav { background: #102544; padding: 12px 5%; display: flex; gap: 12px; flex-wrap: wrap; }
+        nav a, nav button { color: white; text-decoration: none; background: none; border: 0; padding: 9px; cursor: pointer; }
+        main { max-width: 800px; margin: 28px auto; padding: 0 16px; }
+        .panel { background: white; padding: 24px; border: 1px solid #e1e8f0; border-radius: 12px; }
+        h2 { color: #183153; margin-top: 0; }
+        label { display: block; margin: 15px 0 7px; font-weight: 600; }
+        input, textarea, select { width: 100%; padding: 11px; border: 1px solid #ccd6e3; border-radius: 7px; font: inherit; background: white; }
+        textarea { min-height: 90px; }
+        button.primary { margin-top: 20px; background: #183153; color: white; border: 0; padding: 12px 18px; border-radius: 7px; cursor: pointer; }
+        .notice { background: #eff6ff; padding: 12px; border-radius: 7px; margin: 12px 0; }
+        .back { display: inline-block; margin-top: 18px; color: #2563eb; text-decoration: none; }
     </style>
 </head>
-
 <body>
-
-<header class="navbar">
-    <h1>Project Task Management System</h1>
-</header>
-
-<main class="container">
-
-    <a th:href="@{/tasks}" class="back-link">&larr; Back to Tasks</a>
-
-    <div class="heading">
-        <h2>Edit Task</h2>
-        <p>Update task details, project assignment, priority, status, and deadline.</p>
-    </div>
-
-    <form th:action="@{/tasks/update}" method="post">
-
-        <input type="hidden" name="id" th:value="${task.id}">
-
-        <div class="form-group">
-            <label for="projectId">Project</label>
-            <select id="projectId" name="projectId" required>
-                <option value="">Select Project</option>
-                <option
-                        th:each="project : ${projects}"
-                        th:value="${project.id}"
-                        th:text="${project.name}"
-                        th:selected="${task.project != null and project.id == task.project.id}">
-                </option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="title">Task Title</label>
-            <input
-                    type="text"
-                    id="title"
-                    name="title"
-                    th:value="${task.title}"
-                    placeholder="Enter task title"
-                    required>
-        </div>
-
-        <div class="form-group">
-            <label for="description">Task Description</label>
-            <textarea
-                    id="description"
-                    name="description"
-                    th:text="${task.description}"
-                    placeholder="Describe the task and its requirements"></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="status">Task Status</label>
-            <select id="status" name="status" required>
-                <option value="Not Started"
-                        th:selected="${task.status == 'Not Started'}">
-                    Not Started
-                </option>
-                <option value="In Progress"
-                        th:selected="${task.status == 'In Progress'}">
-                    In Progress
-                </option>
-                <option value="Completed"
-                        th:selected="${task.status == 'Completed'}">
-                    Completed
-                </option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="priority">Task Priority</label>
-            <select id="priority" name="priority" required>
-                <option value="Low"
-                        th:selected="${task.priority == 'Low'}">
-                    Low
-                </option>
-                <option value="Medium"
-                        th:selected="${task.priority == 'Medium'}">
-                    Medium
-                </option>
-                <option value="High"
-                        th:selected="${task.priority == 'High'}">
-                    High
-                </option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="teamMemberId">Assign Team Member</label>
-            <select id="teamMemberId" name="teamMemberId">
-                <option value="">-- Unassigned --</option>
-                <option
-                        th:each="member : ${teamMembers}"
-                        th:value="${member.id}"
-                        th:text="${member.name}"
-                        th:selected="${task.teamMember != null and task.teamMember.id == member.id}">
-                </option>
-            </select>
-            <div class="form-note">
-                Select a team member responsible for this task, or leave it unassigned.
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="deadline">Task Deadline</label>
-            <input
-                    type="date"
-                    id="deadline"
-                    name="deadline"
-                    th:value="${task.deadline}">
-        </div>
-
-        <div class="form-actions">
-            <button type="submit" class="button button-primary">
-                Update Task
-            </button>
-            <a th:href="@{/tasks}" class="button button-secondary">
-                Cancel
-            </a>
-        </div>
-
+<header><h2>Project Task Management System</h2></header>
+<nav>
+    <a th:href="@{/manager/dashboard}">Dashboard</a>
+    <a th:href="@{/projects}">Projects</a>
+    <a th:href="@{/teams}">Create Team</a>
+    <a th:href="@{/tasks}">Tasks</a>
+    <a th:href="@{/team}">Team Members</a>
+    <form th:action="@{/logout}" method="post" style="margin:0">
+        <button type="submit">Logout</button>
     </form>
+</nav>
 
+<main>
+    <section class="panel">
+        <h2>Edit Task</h2>
+
+        <div class="notice">
+            Task assignment is restricted to the team currently assigned to this project.
+        </div>
+
+        <form th:action="@{/tasks/update}" method="post">
+            <input type="hidden" name="id" th:value="${task.id}">
+            <input type="hidden" name="projectId"
+                   th:value="${task.project != null ? task.project.id : ''}">
+
+            <label>Project</label>
+            <input type="text"
+                   th:value="${task.project != null ? task.project.name : 'No project'}"
+                   readonly>
+
+            <label for="title">Task Title</label>
+            <input id="title" name="title" required
+                   th:value="${task.title}">
+
+            <label for="description">Description</label>
+            <textarea id="description" name="description"
+                      th:text="${task.description}"></textarea>
+
+            <label for="teamMemberId">Assigned Employee</label>
+            <select id="teamMemberId" name="teamMemberId" required
+                    th:disabled="${#lists.isEmpty(teamMembers)}">
+                <option value="">-- Select employee --</option>
+                <option th:each="member : ${teamMembers}"
+                        th:value="${member.id}"
+                        th:selected="${task.teamMember != null and task.teamMember.id == member.id}"
+                        th:text="${member.name + ' — ' + member.email}">
+                </option>
+            </select>
+
+            <label for="status">Status</label>
+            <select id="status" name="status" required>
+                <option value="Pending" th:selected="${task.status == 'Pending'}">Pending</option>
+                <option value="In Progress" th:selected="${task.status == 'In Progress'}">In Progress</option>
+                <option value="Completed" th:selected="${task.status == 'Completed'}">Completed</option>
+            </select>
+
+            <label for="priority">Priority</label>
+            <select id="priority" name="priority" required>
+                <option value="Low" th:selected="${task.priority == 'Low'}">Low</option>
+                <option value="Medium" th:selected="${task.priority == 'Medium'}">Medium</option>
+                <option value="High" th:selected="${task.priority == 'High'}">High</option>
+                <option value="Urgent" th:selected="${task.priority == 'Urgent'}">Urgent</option>
+            </select>
+
+            <label for="deadline">Deadline</label>
+            <input id="deadline" name="deadline" type="date"
+                   th:value="${task.deadline}">
+
+            <button class="primary" type="submit"
+                    th:disabled="${#lists.isEmpty(teamMembers)}">
+                Save Changes
+            </button>
+        </form>
+
+        <p th:if="${#lists.isEmpty(teamMembers)}">
+            This project has no eligible team members. Assign a team to the project first.
+        </p>
+
+        <a class="back" th:href="@{/tasks}">← Back to Tasks</a>
+    </section>
 </main>
-
-<footer class="footer">
-    Project Task Management System
-</footer>
-
 </body>
 </html>

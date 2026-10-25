@@ -29,7 +29,8 @@ public class TeamMemberController {
             throw new AccessDeniedException("Please log in.");
         }
 
-        AppUser user = userRepository.findByUsername(authentication.getName())
+        AppUser user = userRepository.findByUsername(
+                        authentication.getName().trim())
                 .orElseThrow(() ->
                         new AccessDeniedException("User not found."));
 
@@ -52,7 +53,8 @@ public class TeamMemberController {
         Long adminId = manager.getWorkspaceAdminId();
 
         model.addAttribute("member", new TeamMember());
-        model.addAttribute("members",
+        model.addAttribute(
+                "members",
                 teamMemberRepository.findByOwnerAdmin_Id(adminId));
 
         return "team";
@@ -73,16 +75,24 @@ public class TeamMemberController {
             throw new IllegalArgumentException("Member email is required.");
         }
 
+        if (member.getRole() == null || member.getRole().isBlank()) {
+            throw new IllegalArgumentException(
+                    "Please select a job designation.");
+        }
+
         AppUser admin = userRepository.findById(
                         manager.getWorkspaceAdminId())
                 .orElseThrow(() ->
-                        new IllegalStateException("Admin workspace not found."));
+                        new IllegalStateException(
+                                "Admin workspace not found."));
 
         member.setName(member.getName().trim());
         member.setEmail(member.getEmail().trim());
+        member.setRole(member.getRole().trim());
         member.setOwnerAdmin(admin);
 
         teamMemberRepository.save(member);
+
         return "redirect:/team";
     }
 
@@ -102,6 +112,7 @@ public class TeamMemberController {
                                 "Member not found in your workspace."));
 
         model.addAttribute("teamMember", member);
+
         return "edit-team-member";
     }
 
@@ -114,16 +125,36 @@ public class TeamMemberController {
 
         TeamMember existing = teamMemberRepository
                 .findByIdAndOwnerAdmin_Id(
-                        submitted.getId(), manager.getWorkspaceAdminId())
+                        submitted.getId(),
+                        manager.getWorkspaceAdminId())
                 .orElseThrow(() ->
                         new AccessDeniedException(
                                 "Member not found in your workspace."));
 
+        if (submitted.getName() == null
+                || submitted.getName().isBlank()) {
+            throw new IllegalArgumentException(
+                    "Member name is required.");
+        }
+
+        if (submitted.getEmail() == null
+                || submitted.getEmail().isBlank()) {
+            throw new IllegalArgumentException(
+                    "Member email is required.");
+        }
+
+        if (submitted.getRole() == null
+                || submitted.getRole().isBlank()) {
+            throw new IllegalArgumentException(
+                    "Please select a job designation.");
+        }
+
         existing.setName(submitted.getName().trim());
         existing.setEmail(submitted.getEmail().trim());
-        existing.setRole(submitted.getRole());
+        existing.setRole(submitted.getRole().trim());
 
         teamMemberRepository.save(existing);
+
         return "redirect:/team";
     }
 
@@ -142,6 +173,7 @@ public class TeamMemberController {
                                 "Member not found in your workspace."));
 
         teamMemberRepository.delete(member);
+
         return "redirect:/team";
     }
 }

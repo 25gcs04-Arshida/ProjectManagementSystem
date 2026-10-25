@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Members</title>
+
+    <title>Team Members | Project Task Management System</title>
 
     <style>
         * {
@@ -12,7 +13,6 @@
 
         :root {
             --primary: #183153;
-            --primary-dark: #102544;
             --primary-light: #28558b;
             --accent: #3b82f6;
             --background: #f3f6fc;
@@ -24,98 +24,144 @@
         }
 
         body {
+            margin: 0;
             font-family: "Segoe UI", Arial, sans-serif;
             background: var(--background);
             color: var(--text);
-            margin: 0;
             min-height: 100vh;
         }
 
         header {
             background: linear-gradient(120deg, #102544, #234a7b);
-            color: var(--white);
-            padding: 22px 5%;
-            box-shadow: 0 4px 18px rgba(16, 37, 68, 0.15);
+            color: white;
+            padding: 25px 5%;
         }
 
-        header h2 {
+        header h1 {
             margin: 0;
-            font-size: 24px;
-            font-weight: 700;
-            letter-spacing: 0.2px;
+            font-size: 25px;
         }
 
         nav {
             background: #18365e;
-            padding: 10px 5%;
+            padding: 12px 5%;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
-        nav a {
+        nav a,
+        nav button {
             color: #edf4ff;
             text-decoration: none;
+            background: transparent;
+            border: 0;
+            cursor: pointer;
+            font: inherit;
             font-size: 14px;
-            font-weight: 500;
-            padding: 10px 15px;
+            padding: 10px 14px;
             border-radius: 7px;
-            transition: background 0.25s ease;
         }
 
-        nav a:hover {
-            background: rgba(255, 255, 255, 0.15);
+        nav a:hover,
+        nav button:hover {
+            background: rgba(255, 255, 255, 0.14);
         }
 
-        .container {
-            max-width: 1250px;
-            margin: 35px auto;
-            padding: 0 25px;
+        nav form {
+            margin: 0;
         }
 
-        .box {
+        main {
+            max-width: 1280px;
+            margin: 32px auto;
+            padding: 0 24px;
+        }
+
+        .panel {
             background: var(--white);
-            padding: 30px;
-            margin-bottom: 28px;
             border: 1px solid var(--border);
-            border-radius: 16px;
+            border-radius: 15px;
+            padding: 26px;
+            margin-bottom: 25px;
             box-shadow: var(--shadow);
         }
 
-        .page-title {
+        .panel h2 {
             color: var(--primary);
-            font-size: 24px;
-            font-weight: 700;
-            margin: 0 0 25px;
-            padding-left: 13px;
-            border-left: 4px solid var(--accent);
+            font-size: 22px;
+            margin: 0 0 9px;
         }
 
-        #memberSearch {
+        .subtitle {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0 0 23px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            min-width: 0;
+        }
+
+        label {
             display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #344762;
+        }
+
+        input,
+        select {
             width: 100%;
-            padding: 14px 16px;
-            margin: 0 0 24px;
+            min-height: 44px;
+            padding: 11px 13px;
             border: 1px solid #d3dce8;
-            border-radius: 9px;
-            background: #fbfdff;
+            border-radius: 8px;
+            background: white;
             color: var(--text);
             font-family: inherit;
             font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
-        #memberSearch:focus {
+        input:focus,
+        select:focus {
+            outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
-            background: var(--white);
         }
 
-        #memberSearch::placeholder {
-            color: #94a3b8;
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        .primary-button {
+            background: linear-gradient(120deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 13px 22px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .primary-button:hover {
+            opacity: 0.92;
+        }
+
+        .search-box {
+            margin: 18px 0;
+            max-width: 440px;
         }
 
         .table-wrap {
@@ -127,133 +173,120 @@
 
         table {
             width: 100%;
-            min-width: 650px;
+            min-width: 850px;
             border-collapse: separate;
             border-spacing: 0;
-            background: var(--white);
+            background: white;
         }
 
         th,
         td {
-            padding: 16px;
             text-align: left;
+            padding: 15px 14px;
             border-bottom: 1px solid #e9eef5;
-            font-size: 14px;
+            font-size: 13px;
+            vertical-align: middle;
         }
 
         th {
             background: #edf3fb;
             color: var(--primary);
             font-size: 12px;
-            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.35px;
             white-space: nowrap;
         }
 
-        tbody tr {
-            transition: background 0.2s ease;
-        }
-
         tbody tr:hover {
-            background: #f5f9ff;
+            background: #f7faff;
         }
 
         tbody tr:last-child td {
             border-bottom: none;
         }
 
-        td {
-            color: #475569;
+        .designation {
+            display: inline-block;
+            background: #eaf2ff;
+            color: #1d4e89;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .email {
             overflow-wrap: anywhere;
         }
 
-        td:nth-child(2) {
-            color: var(--primary);
-            font-weight: 600;
+        .action-links {
+            white-space: nowrap;
         }
 
-        td a {
-            display: inline-block;
+        .edit-link {
             color: #2563eb;
             text-decoration: none;
             font-weight: 600;
-            margin: 2px 4px;
-            transition: color 0.2s ease;
         }
 
-        td a:hover {
-            color: #153e83;
+        .delete-link {
+            color: #dc2626;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .edit-link:hover,
+        .delete-link:hover {
             text-decoration: underline;
         }
 
         .empty-message {
-            padding: 25px;
             text-align: center;
+            padding: 28px;
             color: var(--muted);
         }
 
-        @media (max-width: 800px) {
+        @media (max-width: 650px) {
             header {
-                padding: 20px 4%;
+                padding: 21px;
+            }
+
+            header h1 {
+                font-size: 21px;
             }
 
             nav {
-                padding: 10px 4%;
-            }
-
-            .container {
-                margin: 25px auto;
-                padding: 0 18px;
-            }
-
-            .box {
-                padding: 24px 20px;
-            }
-        }
-
-        @media (max-width: 600px) {
-            header {
-                padding: 18px 20px;
-            }
-
-            header h2 {
-                font-size: 20px;
-                line-height: 1.4;
-            }
-
-            nav {
-                padding: 9px 12px;
+                padding: 10px;
                 gap: 4px;
             }
 
-            nav a {
+            nav a,
+            nav button {
                 font-size: 13px;
                 padding: 9px 10px;
             }
 
-            .container {
-                margin: 20px auto;
+            main {
                 padding: 0 12px;
+                margin: 20px auto;
             }
 
-            .box {
-                padding: 21px 15px;
-                border-radius: 12px;
+            .panel {
+                padding: 20px 15px;
             }
 
-            .page-title {
-                font-size: 21px;
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
             }
 
-            #memberSearch {
-                padding: 12px;
+            .full {
+                grid-column: auto;
             }
 
-            th,
-            td {
-                padding: 12px;
-                font-size: 13px;
+            .primary-button {
+                width: 100%;
             }
         }
     </style>
@@ -262,7 +295,7 @@
 <body>
 
 <header>
-    <h2>Project Task Management System</h2>
+    <h1>Project Task Management System</h1>
 </header>
 
 <nav>
@@ -270,67 +303,161 @@
     <a th:href="@{/projects}">Projects</a>
     <a th:href="@{/tasks}">Tasks</a>
     <a th:href="@{/team}">Team Members</a>
+
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Logout</button>
+    </form>
 </nav>
 
-<div class="container">
-    <div class="box">
+<main>
 
-        <h2 class="page-title">Team Members</h2>
+    <section class="panel">
+        <h2>Add Team Member</h2>
+        <p class="subtitle">
+            Register a team member with their email address and job designation.
+        </p>
 
-        <input
-                type="text"
-                id="memberSearch"
-                placeholder="Search team members..."
-                onkeyup="searchMembers()">
+        <form th:action="@{/team/save}"
+              th:object="${member}"
+              method="post">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text"
+                           id="name"
+                           th:field="*{name}"
+                           placeholder="Enter full name"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email"
+                           id="email"
+                           th:field="*{email}"
+                           placeholder="Enter email address"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="role">Job Designation</label>
+                    <select id="role" th:field="*{role}" required>
+                        <option value="">-- Select Designation --</option>
+                        <option value="Developer">Developer</option>
+                        <option value="Frontend Developer">Frontend Developer</option>
+                        <option value="Backend Developer">Backend Developer</option>
+                        <option value="Full Stack Developer">Full Stack Developer</option>
+                        <option value="Tester">Tester</option>
+                        <option value="UI/UX Designer">UI/UX Designer</option>
+                        <option value="Business Analyst">Business Analyst</option>
+                        <option value="Team Lead">Team Lead</option>
+                        <option value="DevOps Engineer">DevOps Engineer</option>
+                        <option value="Project Analyst">Project Analyst</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group full">
+                    <button class="primary-button" type="submit">
+                        + Add Team Member
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>Team Members</h2>
+        <p class="subtitle">
+            View and manage your team's contact details and designations.
+        </p>
+
+        <div class="search-box">
+            <label for="memberSearch">Search Team Members</label>
+            <input type="search"
+                   id="memberSearch"
+                   placeholder="Search by ID, name, email or designation...">
+        </div>
 
         <div class="table-wrap">
-            <table id="memberTable">
+            <table>
                 <thead>
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Role</th>
+                    <th>Job Designation</th>
                     <th>Action</th>
                 </tr>
                 </thead>
 
-                <tbody>
-                <tr th:each="member : ${members}">
-                    <td th:text="${member.id}"></td>
-                    <td th:text="${member.name}"></td>
-                    <td th:text="${member.email}"></td>
-                    <td th:text="${member.role}"></td>
+                <tbody id="memberTableBody">
+
+                <tr th:each="teamMember : ${members}"
+                    class="member-row">
+
+                    <td th:text="${teamMember.id}"></td>
+
+                    <td th:text="${teamMember.name != null
+                                  ? teamMember.name : 'Not available'}"></td>
+
+                    <td class="email"
+                        th:text="${teamMember.email != null
+                                  and !teamMember.email.isBlank()
+                                  ? teamMember.email : 'Not available'}"></td>
+
                     <td>
-                        <a th:href="@{'/team/edit/' + ${member.id}}">Edit</a>
-                        |
-                        <a th:href="@{'/team/delete/' + ${member.id}}"
-                           onclick="return confirm('Are you sure you want to delete this team member?')">Delete</a>
+                        <span class="designation"
+                              th:text="${teamMember.role != null
+                                        and !teamMember.role.isBlank()
+                                        ? teamMember.role : 'Not assigned'}">
+                        </span>
+                    </td>
+
+                    <td class="action-links">
+                        <a class="edit-link"
+                           th:href="@{/team/edit/{id}(id=${teamMember.id})}">
+                            Edit
+                        </a>
+
+                        <a class="delete-link"
+                           th:href="@{/team/delete/{id}(id=${teamMember.id})}"
+                           onclick="return confirm('Are you sure you want to delete this team member?');">
+                            Delete
+                        </a>
                     </td>
                 </tr>
+
+                <tr th:if="${#lists.isEmpty(members)}">
+                    <td colspan="5" class="empty-message">
+                        No team members found. Add your first team member above.
+                    </td>
+                </tr>
+
                 </tbody>
             </table>
         </div>
+    </section>
 
-    </div>
-</div>
+</main>
 
 <script>
-    function searchMembers() {
-        let input = document.getElementById("memberSearch");
-        let filter = input.value.toLowerCase();
-        let rows = document.querySelectorAll("#memberTable tbody tr");
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("memberSearch");
+        const rows = document.querySelectorAll(".member-row");
 
-        rows.forEach(function(row) {
-            let name = row.cells[1].textContent.toLowerCase();
+        searchInput.addEventListener("input", function () {
+            const searchValue = this.value.toLowerCase().trim();
 
-            if (name.includes(filter)) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
+            rows.forEach(function (row) {
+                const rowText = row.textContent.toLowerCase();
+                row.style.display = rowText.includes(searchValue) ? "" : "none";
+            });
         });
-    }
+    });
 </script>
 
 </body>

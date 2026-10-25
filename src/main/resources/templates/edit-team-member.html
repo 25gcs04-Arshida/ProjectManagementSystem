@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Edit Team Member | Project Task Management System</title>
 
     <style>
@@ -13,229 +13,181 @@
 
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f3f6fb;
-            color: #263449;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f3f6fc;
+            color: #26364b;
             min-height: 100vh;
         }
 
-        .navbar {
-            background: linear-gradient(135deg, #142b4b, #24568d);
+        header {
+            background: linear-gradient(120deg, #102544, #234a7b);
             color: white;
-            padding: 20px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            box-shadow: 0 4px 15px rgba(20, 43, 75, 0.15);
+            padding: 25px 5%;
         }
 
-        .navbar h2 {
+        header h1 {
             margin: 0;
-            font-size: 21px;
-            line-height: 1.5;
+            font-size: 25px;
         }
 
-        .navbar-links {
+        nav {
+            background: #18365e;
+            padding: 12px 5%;
             display: flex;
             align-items: center;
-            flex-wrap: wrap;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
-        .navbar a {
-            color: white;
+        nav a,
+        nav button {
+            color: #edf4ff;
             text-decoration: none;
-            padding: 9px 12px;
-            border-radius: 6px;
+            background: transparent;
+            border: 0;
+            cursor: pointer;
+            font: inherit;
             font-size: 14px;
-            transition: background 0.2s ease;
+            padding: 10px 14px;
+            border-radius: 7px;
         }
 
-        .navbar a:hover {
-            background: rgba(255, 255, 255, 0.15);
+        nav a:hover,
+        nav button:hover {
+            background: rgba(255, 255, 255, 0.14);
         }
 
-        .container {
-            width: calc(100% - 32px);
-            max-width: 650px;
+        nav form {
+            margin: 0;
+        }
+
+        main {
+            max-width: 760px;
             margin: 40px auto;
+            padding: 0 20px;
         }
 
-        .back-link {
-            display: inline-block;
-            color: #24568d;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-
-        .back-link:hover {
-            text-decoration: underline;
-        }
-
-        .form-card {
+        .panel {
             background: white;
-            padding: 35px;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(24, 49, 83, 0.08);
-            border: 1px solid #e8edf5;
+            border: 1px solid #e3eaf3;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 24px rgba(24, 49, 83, 0.07);
         }
 
-        .form-heading {
-            margin-bottom: 30px;
-        }
-
-        .form-heading h1 {
+        h2 {
             color: #183153;
+            font-size: 23px;
             margin: 0 0 10px;
-            font-size: 28px;
         }
 
         .subtitle {
             color: #718096;
-            margin: 0;
             font-size: 14px;
-            line-height: 1.7;
+            line-height: 1.6;
+            margin: 0 0 25px;
         }
 
         .form-group {
-            margin-bottom: 22px;
+            margin-bottom: 21px;
         }
 
         label {
             display: block;
-            margin-bottom: 9px;
-            color: #263449;
+            margin-bottom: 8px;
+            font-weight: 600;
             font-size: 14px;
-            font-weight: 700;
+            color: #344762;
         }
 
-        input {
-            display: block;
+        input,
+        select {
             width: 100%;
-            padding: 13px 14px;
-            border: 1px solid #d7dfeb;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 14px;
-            color: #263449;
-            background: white;
-            outline: none;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        input:focus {
-            border-color: #356fc0;
-            box-shadow: 0 0 0 3px rgba(53, 111, 192, 0.12);
-        }
-
-        input::placeholder {
-            color: #a0aec0;
-        }
-
-        .form-note {
-            margin-top: 7px;
-            color: #718096;
-            font-size: 12px;
-            line-height: 1.5;
-        }
-
-        .buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 30px;
-            padding-top: 23px;
-            border-top: 1px solid #e8edf5;
-        }
-
-        .btn {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
             min-height: 45px;
-            padding: 12px 22px;
-            border: none;
+            padding: 12px 14px;
+            border: 1px solid #d3dce8;
             border-radius: 8px;
+            background: white;
+            color: #26364b;
             font-family: inherit;
             font-size: 14px;
-            font-weight: 700;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 28px;
+        }
+
+        .button {
+            display: inline-block;
             text-align: center;
             text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            padding: 13px 21px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            flex: 1;
-            transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .btn-update {
+        .save-button {
+            background: linear-gradient(120deg, #183153, #28558b);
             color: white;
-            background: linear-gradient(135deg, #24568d, #356fc0);
-            box-shadow: 0 4px 10px rgba(36, 86, 141, 0.15);
         }
 
-        .btn-update:hover {
-            background: #183f70;
-            transform: translateY(-1px);
-            box-shadow: 0 6px 14px rgba(36, 86, 141, 0.22);
+        .cancel-button {
+            background: #e9eef5;
+            color: #26364b;
         }
 
-        .btn-cancel {
-            color: #34445c;
-            background: #edf1f7;
-        }
-
-        .btn-cancel:hover {
-            background: #e0e7f1;
-        }
-
-        .footer {
-            padding: 22px 15px;
-            text-align: center;
-            color: #718096;
-            font-size: 13px;
-            margin-top: 20px;
+        .button:hover {
+            opacity: 0.9;
         }
 
         @media (max-width: 600px) {
-            .navbar {
-                padding: 17px 20px;
-                align-items: flex-start;
+            header {
+                padding: 21px;
             }
 
-            .navbar h2 {
-                font-size: 18px;
+            header h1 {
+                font-size: 21px;
             }
 
-            .navbar-links {
+            nav {
+                padding: 10px;
                 gap: 4px;
             }
 
-            .navbar a {
-                padding: 8px;
+            nav a,
+            nav button {
                 font-size: 13px;
+                padding: 9px 10px;
             }
 
-            .container {
-                margin: 25px auto;
+            main {
+                margin: 22px auto;
+                padding: 0 12px;
             }
 
-            .form-card {
-                padding: 24px 20px;
-                border-radius: 12px;
+            .panel {
+                padding: 23px 18px;
             }
 
-            .form-heading h1 {
-                font-size: 24px;
-            }
-
-            .buttons {
+            .actions {
                 flex-direction: column;
             }
 
-            .btn {
+            .button {
                 width: 100%;
             }
         }
@@ -244,29 +196,29 @@
 
 <body>
 
-<nav class="navbar">
-    <h2>Project Task Management System</h2>
+<header>
+    <h1>Project Task Management System</h1>
+</header>
 
-    <div class="navbar-links">
-        <a th:href="@{/}">Home</a>
-        <a th:href="@{/projects}">Projects</a>
-        <a th:href="@{/tasks}">Tasks</a>
-        <a th:href="@{/team}">Team</a>
-    </div>
+<nav>
+    <a th:href="@{/manager/dashboard}">Dashboard</a>
+    <a th:href="@{/projects}">Projects</a>
+    <a th:href="@{/tasks}">Tasks</a>
+    <a th:href="@{/team}">Team Members</a>
+
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Logout</button>
+    </form>
 </nav>
 
-<main class="container">
+<main>
+    <section class="panel">
 
-    <a th:href="@{/team}" class="back-link">&larr; Back to Team</a>
+        <h2>Edit Team Member</h2>
 
-    <section class="form-card">
-
-        <div class="form-heading">
-            <h1>Edit Team Member</h1>
-            <p class="subtitle">
-                Update the team member's personal details and role using the form below.
-            </p>
-        </div>
+        <p class="subtitle">
+            Update the team member's name, email address and job designation.
+        </p>
 
         <form th:action="@{/team/update}"
               th:object="${teamMember}"
@@ -276,45 +228,58 @@
 
             <div class="form-group">
                 <label for="name">Full Name</label>
-                <input
-                        type="text"
-                        id="name"
-                        th:field="*{name}"
-                        placeholder="Enter full name"
-                        autocomplete="name"
-                        required>
+                <input type="text"
+                       id="name"
+                       th:field="*{name}"
+                       placeholder="Enter full name"
+                       required>
             </div>
 
             <div class="form-group">
                 <label for="email">Email Address</label>
-                <input
-                        type="email"
-                        id="email"
-                        th:field="*{email}"
-                        placeholder="Enter email address"
-                        autocomplete="email"
-                        required>
+                <input type="email"
+                       id="email"
+                       th:field="*{email}"
+                       placeholder="Enter email address"
+                       required>
             </div>
 
             <div class="form-group">
-                <label for="role">Role</label>
-                <input
-                        type="text"
-                        id="role"
-                        th:field="*{role}"
-                        placeholder="Enter team role"
-                        required>
-                <p class="form-note">
-                    Enter the team member's role in the project.
-                </p>
+                <label for="role">Job Designation</label>
+
+                <select id="role" th:field="*{role}" required>
+                    <option value="">-- Select Designation --</option>
+
+                    <option value="Developer">Developer</option>
+                    <option value="Frontend Developer">Frontend Developer</option>
+                    <option value="Backend Developer">Backend Developer</option>
+                    <option value="Full Stack Developer">Full Stack Developer</option>
+                    <option value="Tester">Tester</option>
+                    <option value="UI/UX Designer">UI/UX Designer</option>
+                    <option value="Business Analyst">Business Analyst</option>
+                    <option value="Team Lead">Team Lead</option>
+                    <option value="DevOps Engineer">DevOps Engineer</option>
+                    <option value="Project Analyst">Project Analyst</option>
+                    <option value="Other">Other</option>
+
+                    <option th:if="${teamMember.role == 'EMPLOYEE'}"
+                            value="EMPLOYEE">
+                        EMPLOYEE (existing designation)
+                    </option>
+
+                    <option th:if="${teamMember.role == 'MANAGER'}"
+                            value="MANAGER">
+                        MANAGER (existing designation)
+                    </option>
+                </select>
             </div>
 
-            <div class="buttons">
-                <button type="submit" class="btn btn-update">
-                    Update Member
+            <div class="actions">
+                <button type="submit" class="button save-button">
+                    Save Changes
                 </button>
 
-                <a th:href="@{/team}" class="btn btn-cancel">
+                <a th:href="@{/team}" class="button cancel-button">
                     Cancel
                 </a>
             </div>
@@ -322,12 +287,7 @@
         </form>
 
     </section>
-
 </main>
-
-<footer class="footer">
-    Project Task Management System
-</footer>
 
 </body>
 </html>

@@ -3,6 +3,7 @@ package com.projectmanagement.projecttaskmanagementsystem.controller;
 import com.projectmanagement.projecttaskmanagementsystem.AppUser;
 import com.projectmanagement.projecttaskmanagementsystem.Project;
 import com.projectmanagement.projecttaskmanagementsystem.Task;
+import com.projectmanagement.projecttaskmanagementsystem.Team;
 import com.projectmanagement.projecttaskmanagementsystem.TeamMember;
 import com.projectmanagement.projecttaskmanagementsystem.repository.AppUserRepository;
 import com.projectmanagement.projecttaskmanagementsystem.repository.ProjectRepository;
@@ -16,6 +17,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 
 @Controller
 public class TaskController {
@@ -30,7 +33,6 @@ public class TaskController {
             ProjectRepository projectRepository,
             TeamMemberRepository teamMemberRepository,
             AppUserRepository userRepository) {
-
         this.taskRepository = taskRepository;
         this.projectRepository = projectRepository;
         this.teamMemberRepository = teamMemberRepository;
@@ -42,37 +44,86 @@ public class TaskController {
             throw new AccessDeniedException("Please log in.");
         }
 
-        AppUser user = userRepository.findByUsername(
-                authentication.getName()
+        AppUser manager = userRepository.findByUsername(
+                authentication.getName().trim()
         ).orElseThrow(() ->
                 new AccessDeniedException("User not found.")
         );
 
-        if (!"MANAGER".equalsIgnoreCase(user.getRole())) {
+        if (!"MANAGER".equalsIgnoreCase(manager.getRole())) {
             throw new AccessDeniedException(
                     "Only managers can manage tasks."
             );
         }
 
-        if (user.getWorkspaceAdminId() == null) {
+        if (manager.getWorkspaceAdminId() == null) {
             throw new AccessDeniedException(
                     "This manager has no admin workspace."
             );
         }
 
-        return user;
+        return manager;
     }
 
-    private void loadFormData(Model model, Long adminId) {
-        model.addAttribute(
-                "projects",
-                projectRepository.findByOwnerAdmin_Id(adminId)
-        );
+    private Project getProject(Long projectId, Long adminId) {
+        return projectRepository.findByIdAndOwnerAdmin_Id(projectId, adminId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Project not found in your workspace."
+                        )
+                );
+    }
 
-        model.addAttribute(
-                "teamMembers",
-                teamMemberRepository.findByOwnerAdmin_Id(adminId)
-        );
+    private TeamMember getMemberForProject(
+            Long memberId, Project project, Long adminId) {
+
+        if (project.getTeam() == null) {
+            throw new IllegalArgumentException(
+                    "Assign a team to this project before assigning tasks."
+            );
+        }
+
+        TeamMember member = teamMemberRepository
+                .findByIdAndOwnerAdmin_Id(memberId, adminId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Employee not found in your workspace."
+                        )
+                );
+
+        boolean belongsToTeam = project.getTeam().getMembers().stream()
+                .anyMatch(teamMember ->
+                        teamMember.getId().equals(member.getId()));
+
+        if (!belongsToTeam) {
+            throw new AccessDeniedException(
+                    "You can assign tasks only to members of this project's team."
+            );
+        }
+
+        return member;
+    }
+
+    private void loadFormData(
+            Model model, Long adminId, Long projectId) {
+
+        List<Project> projects = projectRepository
+                .findByOwnerAdmin_Id(adminId);
+
+        model.addAttribute("projects", projects);
+        model.addAttribute("selectedProjectId", projectId);
+
+        List<TeamMember> eligibleMembers = Collections.emptyList();
+
+        if (projectId != null) {
+            Project project = getProject(projectId, adminId);
+
+            if (project.getTeam() != null) {
+                eligibleMembers = project.getTeam().getMembers();
+            }
+        }
+
+        model.addAttribute("teamMembers", eligibleMembers);
     }
 
     @GetMapping("/tasks")
@@ -84,14 +135,17 @@ public class TaskController {
         AppUser manager = getManager(authentication);
         Long adminId = manager.getWorkspaceAdminId();
 
+        if (projectId != null) {
+            getProject(projectId, adminId);
+        }
+
         model.addAttribute("task", new Task());
         model.addAttribute(
                 "tasks",
                 taskRepository.findByOwnerAdmin_Id(adminId)
         );
-        model.addAttribute("selectedProjectId", projectId);
 
-        loadFormData(model, adminId);
+        loadFormData(model, adminId, projectId);
 
         return "tasks";
     }
@@ -110,21 +164,13 @@ public class TaskController {
         AppUser manager = getManager(authentication);
         Long adminId = manager.getWorkspaceAdminId();
 
-        Project project = projectRepository
-                .findByIdAndOwnerAdmin_Id(projectId, adminId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Select a project from your workspace."
-                        )
-                );
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("Task title is required.");
+        }
 
-        TeamMember member = teamMemberRepository
-                .findByIdAndOwnerAdmin_Id(teamMemberId, adminId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Select a team member from your workspace."
-                        )
-                );
+        Project project = getProject(projectId, adminId);
+        TeamMember member = getMemberForProject(
+                teamMemberId, project, adminId);
 
         AppUser admin = userRepository.findById(adminId)
                 .orElseThrow(() ->
@@ -164,7 +210,11 @@ public class TaskController {
                 );
 
         model.addAttribute("task", task);
-        loadFormData(model, adminId);
+
+        Long projectId = task.getProject() == null
+                ? null : task.getProject().getId();
+
+        loadFormData(model, adminId, projectId);
 
         return "edit-task";
     }
@@ -189,17 +239,13 @@ public class TaskController {
                         new IllegalArgumentException("Task not found.")
                 );
 
-        Project project = projectRepository
-                .findByIdAndOwnerAdmin_Id(projectId, adminId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Project not found.")
-                );
+        Project project = getProject(projectId, adminId);
+        TeamMember member = getMemberForProject(
+                teamMemberId, project, adminId);
 
-        TeamMember member = teamMemberRepository
-                .findByIdAndOwnerAdmin_Id(teamMemberId, adminId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Team member not found.")
-                );
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("Task title is required.");
+        }
 
         task.setTitle(title.trim());
         task.setDescription(description);
@@ -209,8 +255,7 @@ public class TaskController {
         task.setTeamMember(member);
         task.setDeadline(
                 deadline == null || deadline.isBlank()
-                        ? null
-                        : LocalDate.parse(deadline)
+                        ? null : LocalDate.parse(deadline)
         );
 
         taskRepository.save(task);
@@ -232,8 +277,7 @@ public class TaskController {
                 );
 
         Long projectId = task.getProject() == null
-                ? null
-                : task.getProject().getId();
+                ? null : task.getProject().getId();
 
         taskRepository.delete(task);
 

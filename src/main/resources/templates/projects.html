@@ -4,341 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Projects</title>
-
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #183153;
-            --primary-dark: #102544;
-            --primary-light: #28558b;
-            --accent: #3b82f6;
-            --background: #f3f6fc;
-            --text: #26364b;
-            --muted: #718096;
-            --border: #e3eaf3;
-            --white: #ffffff;
-            --shadow: 0 8px 24px rgba(24, 49, 83, 0.07);
-        }
-
-        body {
-            margin: 0;
-            font-family: "Segoe UI", Arial, sans-serif;
-            background: var(--background);
-            color: var(--text);
-            min-height: 100vh;
-        }
-
-        header {
-            background: linear-gradient(120deg, #102544, #234a7b);
-            color: var(--white);
-            padding: 24px 5%;
-            box-shadow: 0 4px 18px rgba(16, 37, 68, 0.15);
-        }
-
-        header h2 {
-            margin: 0;
-            font-size: 25px;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-        }
-
-        nav {
-            background: #18365e;
-            padding: 13px 5%;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        nav a,
-        nav button {
-            display: inline-block;
-            color: #edf4ff;
-            text-decoration: none;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 14px;
-            font-weight: 500;
-            padding: 10px 14px;
-            border-radius: 7px;
-            transition: background 0.25s ease, transform 0.25s ease;
-        }
-
-        nav a:hover,
-        nav button:hover {
-            background: rgba(255, 255, 255, 0.14);
-            transform: translateY(-1px);
-        }
-
-        main {
-            max-width: 1250px;
-            margin: 35px auto;
-            padding: 0 25px;
-        }
-
-        .panel {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 28px;
-            margin-bottom: 28px;
-            box-shadow: var(--shadow);
-        }
-
-        .panel h2 {
-            color: var(--primary);
-            font-size: 22px;
-            font-weight: 700;
-            margin: 0 0 25px;
-            padding-left: 13px;
-            border-left: 4px solid var(--accent);
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 22px;
-        }
-
-        .form-grid > div {
-            min-width: 0;
-        }
-
-        label {
-            display: block;
-            font-weight: 600;
-            font-size: 14px;
-            color: #344762;
-            margin-bottom: 9px;
-        }
-
-        input,
-        textarea,
-        select {
-            display: block;
-            width: 100%;
-            padding: 12px 14px;
-            border: 1px solid #d3dce8;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 14px;
-            color: var(--text);
-            background: var(--white);
-            outline: none;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        input,
-        select {
-            min-height: 44px;
-        }
-
-        input:focus,
-        textarea:focus,
-        select:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
-        }
-
-        textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .full {
-            grid-column: 1 / -1;
-        }
-
-        button.primary {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(120deg, var(--primary), var(--primary-light));
-            color: var(--white);
-            border: none;
-            border-radius: 8px;
-            padding: 13px 23px;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 14px;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(24, 49, 83, 0.16);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        button.primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 7px 16px rgba(24, 49, 83, 0.2);
-        }
-
-        .table-wrap {
-            width: 100%;
-            overflow-x: auto;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-        }
-
-        table {
-            border-collapse: separate;
-            border-spacing: 0;
-            width: 100%;
-            min-width: 800px;
-            background: var(--white);
-        }
-
-        th,
-        td {
-            text-align: left;
-            padding: 15px 14px;
-            border-bottom: 1px solid #e9eef5;
-            font-size: 13px;
-            vertical-align: middle;
-        }
-
-        th {
-            background: #edf3fb;
-            color: var(--primary);
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-            white-space: nowrap;
-        }
-
-        tbody tr {
-            transition: background 0.2s ease;
-        }
-
-        tbody tr:hover {
-            background: #f5f9ff;
-        }
-
-        tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        td {
-            color: #475569;
-            overflow-wrap: anywhere;
-            line-height: 1.6;
-        }
-
-        td:nth-child(2) {
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        td a {
-            display: inline-block;
-            color: #2563eb;
-            text-decoration: none;
-            font-weight: 600;
-            margin: 2px 3px;
-            transition: color 0.2s ease;
-        }
-
-        td a:hover {
-            color: #153e83;
-            text-decoration: underline;
-        }
-
-        td[colspan] {
-            text-align: center;
-            padding: 28px 16px;
-            color: var(--muted);
-            font-size: 14px;
-        }
-
-        @media (max-width: 800px) {
-            header {
-                padding: 22px 4%;
-            }
-
-            main {
-                margin: 25px auto;
-                padding: 0 18px;
-            }
-
-            .panel {
-                padding: 24px 20px;
-            }
-
-            .form-grid {
-                gap: 18px;
-            }
-        }
-
-        @media (max-width: 600px) {
-            header {
-                padding: 20px;
-            }
-
-            header h2 {
-                font-size: 20px;
-                line-height: 1.4;
-            }
-
-            nav {
-                gap: 5px;
-                padding: 10px 14px;
-            }
-
-            nav a,
-            nav button {
-                font-size: 13px;
-                padding: 9px 10px;
-            }
-
-            main {
-                margin: 20px auto;
-                padding: 0 12px;
-            }
-
-            .panel {
-                padding: 21px 15px;
-                border-radius: 12px;
-                margin-bottom: 20px;
-            }
-
-            .panel h2 {
-                font-size: 20px;
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-                gap: 17px;
-            }
-
-            .full {
-                grid-column: auto;
-            }
-
-            button.primary {
-                width: 100%;
-            }
-
-            th,
-            td {
-                padding: 12px;
-            }
-        }
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; background: #f3f6fc; color: #26364b; }
+        header { background: #183153; color: white; padding: 22px 5%; }
+        nav { background: #102544; padding: 12px 5%; display: flex; gap: 12px; flex-wrap: wrap; }
+        nav a, nav button { color: white; text-decoration: none; background: none; border: 0; padding: 9px; cursor: pointer; }
+        main { max-width: 1200px; margin: 28px auto; padding: 0 16px; }
+        .panel { background: white; padding: 24px; border: 1px solid #e1e8f0; border-radius: 12px; margin-bottom: 24px; }
+        h2 { color: #183153; margin-top: 0; }
+        .grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
+        .full { grid-column: 1 / -1; }
+        label { display: block; margin: 12px 0 7px; font-weight: 600; }
+        input, textarea, select { width: 100%; padding: 11px; border: 1px solid #ccd6e3; border-radius: 7px; font: inherit; background: white; }
+        textarea { min-height: 90px; }
+        button.primary { background: #183153; color: white; border: 0; padding: 12px 18px; border-radius: 7px; cursor: pointer; }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; min-width: 850px; border-collapse: collapse; }
+        th, td { text-align: left; padding: 13px; border-bottom: 1px solid #e5eaf1; font-size: 14px; }
+        th { background: #edf3fb; color: #183153; }
+        td a { color: #2563eb; text-decoration: none; margin-right: 7px; }
+        .empty { text-align: center; color: #64748b; }
+        @media(max-width:650px) { .grid { grid-template-columns: 1fr; } .full { grid-column: auto; } .panel { padding: 17px; } }
     </style>
 </head>
-
 <body>
-
-<header>
-    <h2>Project Task Management System</h2>
-</header>
-
+<header><h2>Project Task Management System</h2></header>
 <nav>
     <a th:href="@{/manager/dashboard}">Dashboard</a>
+    <a th:href="@{/teams}">Create Team</a>
     <a th:href="@{/projects}">Projects</a>
     <a th:href="@{/tasks}">Tasks</a>
     <a th:href="@{/team}">Team Members</a>
@@ -350,14 +44,12 @@
 <main>
     <section class="panel">
         <h2>Add Project</h2>
-
         <form th:action="@{/projects/save}" method="post">
-            <div class="form-grid">
+            <div class="grid">
                 <div>
                     <label for="name">Project Name</label>
-                    <input id="name" name="name" required>
+                    <input id="name" name="name" required maxlength="255">
                 </div>
-
                 <div>
                     <label for="status">Status</label>
                     <select id="status" name="status">
@@ -366,19 +58,28 @@
                         <option value="Completed">Completed</option>
                     </select>
                 </div>
-
                 <div class="full">
                     <label for="description">Description</label>
                     <textarea id="description" name="description"></textarea>
                 </div>
-
                 <div>
                     <label for="deadline">Deadline</label>
                     <input id="deadline" name="deadline" type="date">
                 </div>
-
+                <div>
+                    <label for="teamId">Assign Team</label>
+                    <select id="teamId" name="teamId">
+                        <option value="">-- Select a team --</option>
+                        <option th:each="team : ${teams}"
+                                th:value="${team.id}"
+                                th:text="${team.name}"></option>
+                    </select>
+                    <small th:if="${#lists.isEmpty(teams)}">
+                        Create a team first using Create Team.
+                    </small>
+                </div>
                 <div class="full">
-                    <button class="primary" type="submit">+ Add Project</button>
+                    <button class="primary" type="submit">Add Project</button>
                 </div>
             </div>
         </form>
@@ -386,7 +87,6 @@
 
     <section class="panel">
         <h2>Projects</h2>
-
         <div class="table-wrap">
             <table>
                 <thead>
@@ -394,35 +94,33 @@
                     <th>ID</th>
                     <th>Project</th>
                     <th>Description</th>
+                    <th>Assigned Team</th>
                     <th>Status</th>
                     <th>Deadline</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
-
                 <tbody>
                 <tr th:each="p : ${projects}">
                     <td th:text="${p.id}"></td>
                     <td th:text="${p.name}"></td>
-                    <td th:text="${p.description}"></td>
+                    <td th:text="${p.description != null ? p.description : '-'}"></td>
+                    <td th:text="${p.team != null ? p.team.name : 'No team assigned'}"></td>
                     <td th:text="${p.status}"></td>
                     <td th:text="${p.deadline != null ? p.deadline : 'Not set'}"></td>
                     <td>
                         <a th:href="@{/tasks(projectId=${p.id})}">View / Add Tasks</a>
-                        |
                         <a th:href="@{/projects/delete/{id}(id=${p.id})}"
                            onclick="return confirm('Delete this project?');">Delete</a>
                     </td>
                 </tr>
-
                 <tr th:if="${#lists.isEmpty(projects)}">
-                    <td colspan="6">No projects have been added yet.</td>
+                    <td colspan="7" class="empty">No projects have been added yet.</td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </section>
 </main>
-
 </body>
 </html>

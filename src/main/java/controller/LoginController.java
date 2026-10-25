@@ -29,30 +29,35 @@ public class LoginController {
         return "login";
     }
 
-    // Display the admin registration page
     @GetMapping("/register-admin")
     public String showAdminRegistration() {
         return "register-admin";
     }
 
-    // Process the registration form
     @PostMapping("/register-admin")
     public String registerAdmin(
             @RequestParam String fullName,
             @RequestParam String username,
+            @RequestParam String email,
             @RequestParam String password,
             Model model) {
 
         String cleanName = fullName == null ? "" : fullName.trim();
         String cleanUsername = username == null ? "" : username.trim();
+        String cleanEmail = email == null
+                ? ""
+                : email.trim().toLowerCase(java.util.Locale.ROOT);
 
         if (cleanName.isBlank()
                 || cleanUsername.isBlank()
+                || cleanEmail.isBlank()
+                || !cleanEmail.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")
                 || password == null
                 || password.length() < 8) {
 
             model.addAttribute("error",
-                    "Enter your name and username. Password must be at least 8 characters.");
+                    "Enter a valid name, username and email. "
+                            + "Password must be at least 8 characters.");
             return "register-admin";
         }
 
@@ -62,10 +67,10 @@ public class LoginController {
             return "register-admin";
         }
 
-        // Create the first administrator account.
         AppUser user = new AppUser();
         user.setFullName(cleanName);
         user.setUsername(cleanUsername);
+        user.setEmail(cleanEmail);
         user.setPassword(passwordEncoder.encode(password));
         user.setRole("ADMIN");
 
@@ -82,10 +87,12 @@ public class LoginController {
         }
 
         boolean isAdmin = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+                .anyMatch(a ->
+                        a.getAuthority().equals("ROLE_ADMIN"));
 
         boolean isManager = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_MANAGER"));
+                .anyMatch(a ->
+                        a.getAuthority().equals("ROLE_MANAGER"));
 
         if (isAdmin) {
             return "redirect:/admin/dashboard";

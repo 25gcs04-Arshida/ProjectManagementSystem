@@ -43,7 +43,6 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // Public pages and static resources
                         .requestMatchers(
                                 "/login",
                                 "/register-admin",
@@ -53,16 +52,12 @@ public class SecurityConfig {
                                 "/error"
                         ).permitAll()
 
-                        // Change password: available to every logged-in role
                         .requestMatchers("/change-password").authenticated()
 
-                        // Admin-only pages
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
-                        // Employee-only pages
                         .requestMatchers("/employee/**").hasRole("EMPLOYEE")
 
-                        // Manager-only pages and workspace
                         .requestMatchers(
                                 "/manager/**",
                                 "/projects",
@@ -73,7 +68,6 @@ public class SecurityConfig {
                                 "/team/**"
                         ).hasRole("MANAGER")
 
-                        // All other pages require authentication
                         .anyRequest().authenticated()
                 )
 

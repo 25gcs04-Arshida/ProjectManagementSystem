@@ -19,9 +19,15 @@ public class Project {
 
     private String status;
 
+    // Retained for compatibility with existing project data.
     @ManyToOne
     @JoinColumn(name = "team_member_id")
     private TeamMember teamMember;
+
+    // New: one project is assigned one team.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    private Team team;
 
     @Column(name = "deadline")
     private LocalDate deadline;
@@ -67,6 +73,14 @@ public class Project {
 
     public void setTeamMember(TeamMember teamMember) {
         this.teamMember = teamMember;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
     public LocalDate getDeadline() {

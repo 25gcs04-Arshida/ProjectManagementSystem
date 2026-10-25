@@ -2,8 +2,10 @@ package com.projectmanagement.projecttaskmanagementsystem.controller;
 
 import com.projectmanagement.projecttaskmanagementsystem.AppUser;
 import com.projectmanagement.projecttaskmanagementsystem.Project;
+import com.projectmanagement.projecttaskmanagementsystem.Team;
 import com.projectmanagement.projecttaskmanagementsystem.repository.AppUserRepository;
 import com.projectmanagement.projecttaskmanagementsystem.repository.ProjectRepository;
+import com.projectmanagement.projecttaskmanagementsystem.repository.TeamRepository;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -18,12 +20,15 @@ public class ProjectController {
 
     private final ProjectRepository projectRepository;
     private final AppUserRepository userRepository;
+    private final TeamRepository teamRepository;
 
     public ProjectController(
             ProjectRepository projectRepository,
-            AppUserRepository userRepository) {
+            AppUserRepository userRepository,
+            TeamRepository teamRepository) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
+        this.teamRepository = teamRepository;
     }
 
     private AppUser getManager(Authentication authentication) {
@@ -32,21 +37,21 @@ public class ProjectController {
         }
 
         AppUser user = userRepository.findByUsername(
-                        authentication.getName().trim())
-                .orElseThrow(() ->
-                        new AccessDeniedException(
-                                "Manager account was not found."));
+                authentication.getName().trim()
+        ).orElseThrow(() ->
+                new AccessDeniedException("Manager account was not found.")
+        );
 
-        if (user.getRole() == null ||
-                !user.getRole().trim().equalsIgnoreCase("MANAGER")) {
+        if (!"MANAGER".equalsIgnoreCase(user.getRole())) {
             throw new AccessDeniedException(
-                    "Only managers can manage projects.");
+                    "Only managers can manage projects."
+            );
         }
 
         if (user.getWorkspaceAdminId() == null) {
-            throw new IllegalStateException(
-                    "This manager is not linked to an admin workspace. "
-                            + "Create a new manager account from the admin dashboard.");
+            throw new AccessDeniedException(
+                    "This manager has no admin workspace."
+            );
         }
 
         return user;
@@ -63,7 +68,12 @@ public class ProjectController {
         model.addAttribute("project", new Project());
         model.addAttribute(
                 "projects",
-                projectRepository.findByOwnerAdmin_Id(adminId));
+                projectRepository.findByOwnerAdmin_Id(adminId)
+        );
+        model.addAttribute(
+                "teams",
+                teamRepository.findByOwnerAdmin_Id(adminId)
+        );
 
         return "projects";
     }
@@ -74,13 +84,16 @@ public class ProjectController {
             @RequestParam(required = false) String description,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String deadline,
+            @RequestParam(required = false) Long teamId,
             Authentication authentication) {
 
         AppUser manager = getManager(authentication);
+        Long adminId = manager.getWorkspaceAdminId();
 
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException(
-                    "Project name cannot be empty.");
+                    "Project name cannot be empty."
+            );
         }
 
         Project project = new Project();
@@ -88,17 +101,26 @@ public class ProjectController {
         project.setDescription(description);
         project.setStatus(
                 status == null || status.isBlank()
-                        ? "Pending" : status.trim());
+                        ? "Pending" : status.trim()
+        );
 
         if (deadline != null && !deadline.isBlank()) {
             project.setDeadline(LocalDate.parse(deadline));
         }
 
-        AppUser admin = userRepository.findById(
-                        manager.getWorkspaceAdminId())
+        if (teamId != null) {
+            Team team = teamRepository
+                    .findByIdAndOwnerAdmin_Id(teamId, adminId)
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Select a team from your workspace."
+                    ));
+            project.setTeam(team);
+        }
+
+        AppUser admin = userRepository.findById(adminId)
                 .orElseThrow(() ->
-                        new IllegalStateException(
-                                "Admin workspace was not found."));
+                        new IllegalStateException("Admin workspace not found.")
+                );
 
         project.setOwnerAdmin(admin);
         projectRepository.save(project);
@@ -112,13 +134,15 @@ public class ProjectController {
             Authentication authentication) {
 
         AppUser manager = getManager(authentication);
-        Long adminId = manager.getWorkspaceAdminId();
-
         Project project = projectRepository
-                .findByIdAndOwnerAdmin_Id(id, adminId)
+                .findByIdAndOwnerAdmin_Id(
+                        id, manager.getWorkspaceAdminId()
+                )
                 .orElseThrow(() ->
                         new IllegalArgumentException(
-                                "Project not found in your workspace."));
+                                "Project not found in your workspace."
+                        )
+                );
 
         projectRepository.delete(project);
 

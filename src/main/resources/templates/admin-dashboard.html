@@ -432,6 +432,9 @@
                         autocomplete="off"
                         required>
 
+                <label>Email Address</label>
+                <input type="email" name="email" required>
+
                 <label for="password">
                     Temporary Password (minimum 8 characters)
                 </label>
@@ -469,6 +472,7 @@
                     <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Email</th>
                         <th>Username</th>
                         <th>Role</th>
                     </tr>
@@ -477,15 +481,18 @@
                     <tbody>
                     <tr th:each="user : ${users}">
                         <td th:text="${user.fullName}"></td>
+
+                        <td th:text="${user.email != null && !user.email.isBlank() ? user.email : 'Not available'}"></td>
+
                         <td th:text="${user.username}"></td>
+
                         <td>
-                                <span class="role"
-                                      th:text="${user.role}"></span>
+                            <span class="role" th:text="${user.role}"></span>
                         </td>
                     </tr>
 
                     <tr th:if="${#lists.isEmpty(users)}">
-                        <td colspan="3" class="empty">
+                        <td colspan="4" class="empty">
                             No registered accounts found.
                         </td>
                     </tr>
