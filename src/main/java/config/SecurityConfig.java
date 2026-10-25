@@ -30,6 +30,7 @@ public class SecurityConfig {
                 new DaoAuthenticationProvider(userDetailsService);
 
         provider.setPasswordEncoder(passwordEncoder());
+
         return provider;
     }
 
@@ -42,7 +43,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // Public pages and resources
+                        // Public pages and static resources
                         .requestMatchers(
                                 "/login",
                                 "/register-admin",
@@ -52,13 +53,16 @@ public class SecurityConfig {
                                 "/error"
                         ).permitAll()
 
+                        // Change password: available to every logged-in role
+                        .requestMatchers("/change-password").authenticated()
+
                         // Admin-only pages
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         // Employee-only pages
                         .requestMatchers("/employee/**").hasRole("EMPLOYEE")
 
-                        // Manager-only pages
+                        // Manager-only pages and workspace
                         .requestMatchers(
                                 "/manager/**",
                                 "/projects",
@@ -69,7 +73,7 @@ public class SecurityConfig {
                                 "/team/**"
                         ).hasRole("MANAGER")
 
-                        // Everything else requires authentication
+                        // All other pages require authentication
                         .anyRequest().authenticated()
                 )
 
@@ -117,4 +121,5 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 }
