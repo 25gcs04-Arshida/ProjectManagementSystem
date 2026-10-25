@@ -3,7 +3,6 @@ package com.projectmanagement.projecttaskmanagementsystem.controller;
 import com.projectmanagement.projecttaskmanagementsystem.AppUser;
 import com.projectmanagement.projecttaskmanagementsystem.Project;
 import com.projectmanagement.projecttaskmanagementsystem.Task;
-import com.projectmanagement.projecttaskmanagementsystem.Team;
 import com.projectmanagement.projecttaskmanagementsystem.TeamMember;
 import com.projectmanagement.projecttaskmanagementsystem.repository.AppUserRepository;
 import com.projectmanagement.projecttaskmanagementsystem.repository.ProjectRepository;
@@ -17,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.List;
 
@@ -104,11 +104,46 @@ public class TaskController {
         return member;
     }
 
+    private LocalDate parseDeadline(String deadline) {
+        if (deadline == null || deadline.isBlank()) {
+            return null;
+        }
+
+        try {
+            return LocalDate.parse(deadline);
+        } catch (DateTimeParseException exception) {
+            throw new IllegalArgumentException(
+                    "Please provide a valid deadline."
+            );
+        }
+    }
+
+    private void validateTaskFields(
+            String title, String taskRole,
+            String status, String priority) {
+
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("Task title is required.");
+        }
+
+        if (taskRole == null || taskRole.isBlank()) {
+            throw new IllegalArgumentException("Task role is required.");
+        }
+
+        if (!List.of("Pending", "In Progress", "Completed").contains(status)) {
+            throw new IllegalArgumentException("Invalid task status.");
+        }
+
+        if (!List.of("Low", "Medium", "High").contains(priority)) {
+            throw new IllegalArgumentException("Invalid task priority.");
+        }
+    }
+
     private void loadFormData(
             Model model, Long adminId, Long projectId) {
 
-        List<Project> projects = projectRepository
-                .findByOwnerAdmin_Id(adminId);
+        List<Project> projects =
+                projectRepository.findByOwnerAdmin_Id(adminId);
 
         model.addAttribute("projects", projects);
         model.addAttribute("selectedProjectId", projectId);
@@ -158,19 +193,18 @@ public class TaskController {
             @RequestParam String priority,
             @RequestParam Long projectId,
             @RequestParam Long teamMemberId,
+            @RequestParam String taskRole,
             @RequestParam(required = false) String deadline,
             Authentication authentication) {
 
         AppUser manager = getManager(authentication);
         Long adminId = manager.getWorkspaceAdminId();
 
-        if (title == null || title.isBlank()) {
-            throw new IllegalArgumentException("Task title is required.");
-        }
+        validateTaskFields(title, taskRole, status, priority);
 
         Project project = getProject(projectId, adminId);
-        TeamMember member = getMemberForProject(
-                teamMemberId, project, adminId);
+        TeamMember member =
+                getMemberForProject(teamMemberId, project, adminId);
 
         AppUser admin = userRepository.findById(adminId)
                 .orElseThrow(() ->
@@ -184,11 +218,9 @@ public class TaskController {
         task.setPriority(priority);
         task.setProject(project);
         task.setTeamMember(member);
+        task.setTaskRole(taskRole.trim());
+        task.setDeadline(parseDeadline(deadline));
         task.setOwnerAdmin(admin);
-
-        if (deadline != null && !deadline.isBlank()) {
-            task.setDeadline(LocalDate.parse(deadline));
-        }
 
         taskRepository.save(task);
 
@@ -209,11 +241,15 @@ public class TaskController {
                         new IllegalArgumentException("Task not found.")
                 );
 
+        if (task.getProject() == null) {
+            throw new IllegalStateException(
+                    "This task has no associated project."
+            );
+        }
+
         model.addAttribute("task", task);
 
-        Long projectId = task.getProject() == null
-                ? null : task.getProject().getId();
-
+        Long projectId = task.getProject().getId();
         loadFormData(model, adminId, projectId);
 
         return "edit-task";
@@ -228,6 +264,7 @@ public class TaskController {
             @RequestParam String priority,
             @RequestParam Long projectId,
             @RequestParam Long teamMemberId,
+            @RequestParam String taskRole,
             @RequestParam(required = false) String deadline,
             Authentication authentication) {
 
@@ -239,13 +276,11 @@ public class TaskController {
                         new IllegalArgumentException("Task not found.")
                 );
 
-        Project project = getProject(projectId, adminId);
-        TeamMember member = getMemberForProject(
-                teamMemberId, project, adminId);
+        validateTaskFields(title, taskRole, status, priority);
 
-        if (title == null || title.isBlank()) {
-            throw new IllegalArgumentException("Task title is required.");
-        }
+        Project project = getProject(projectId, adminId);
+        TeamMember member =
+                getMemberForProject(teamMemberId, project, adminId);
 
         task.setTitle(title.trim());
         task.setDescription(description);
@@ -253,10 +288,8 @@ public class TaskController {
         task.setPriority(priority);
         task.setProject(project);
         task.setTeamMember(member);
-        task.setDeadline(
-                deadline == null || deadline.isBlank()
-                        ? null : LocalDate.parse(deadline)
-        );
+        task.setTaskRole(taskRole.trim());
+        task.setDeadline(parseDeadline(deadline));
 
         taskRepository.save(task);
 
@@ -281,8 +314,10 @@ public class TaskController {
 
         taskRepository.delete(task);
 
-        return projectId == null
-                ? "redirect:/tasks"
-                : "redirect:/tasks?projectId=" + projectId;
+        if (projectId == null) {
+            return "redirect:/tasks";
+        }
+
+        return "redirect:/tasks?projectId=" + projectId;
     }
 }

@@ -5,38 +5,201 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Projects</title>
     <style>
-        * { box-sizing: border-box; }
-        body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; background: #f3f6fc; color: #26364b; }
-        header { background: #183153; color: white; padding: 22px 5%; }
-        nav { background: #102544; padding: 12px 5%; display: flex; gap: 12px; flex-wrap: wrap; }
-        nav a, nav button { color: white; text-decoration: none; background: none; border: 0; padding: 9px; cursor: pointer; }
-        main { max-width: 1200px; margin: 28px auto; padding: 0 16px; }
-        .panel { background: white; padding: 24px; border: 1px solid #e1e8f0; border-radius: 12px; margin-bottom: 24px; }
-        h2 { color: #183153; margin-top: 0; }
-        .grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
-        .full { grid-column: 1 / -1; }
-        label { display: block; margin: 12px 0 7px; font-weight: 600; }
-        input, textarea, select { width: 100%; padding: 11px; border: 1px solid #ccd6e3; border-radius: 7px; font: inherit; background: white; }
-        textarea { min-height: 90px; }
-        button.primary { background: #183153; color: white; border: 0; padding: 12px 18px; border-radius: 7px; cursor: pointer; }
-        .table-wrap { overflow-x: auto; }
-        table { width: 100%; min-width: 850px; border-collapse: collapse; }
-        th, td { text-align: left; padding: 13px; border-bottom: 1px solid #e5eaf1; font-size: 14px; }
-        th { background: #edf3fb; color: #183153; }
-        td a { color: #2563eb; text-decoration: none; margin-right: 7px; }
-        .empty { text-align: center; color: #64748b; }
-        @media(max-width:650px) { .grid { grid-template-columns: 1fr; } .full { grid-column: auto; } .panel { padding: 17px; } }
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f3f6fc;
+            color: #26364b;
+        }
+
+        header {
+            background: #183153;
+            color: white;
+            padding: 22px 5%;
+        }
+
+        nav {
+            background: #102544;
+            padding: 12px 5%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            background: none;
+            border: 0;
+            padding: 10px 14px;
+            border-radius: 7px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+
+        nav a:hover {
+            background: #2563eb;
+        }
+
+        nav form {
+            margin: 0 0 0 auto !important;
+        }
+
+        nav button {
+            background: #2563eb;
+            color: white;
+            border: 2px solid #2563eb;
+            padding: 10px 18px;
+            border-radius: 7px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        nav button:hover {
+            background: #1d4ed8;
+            border-color: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 28px auto;
+            padding: 0 16px;
+        }
+
+        .panel {
+            background: white;
+            padding: 24px;
+            border: 1px solid #e1e8f0;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+
+        h2 {
+            color: #183153;
+            margin-top: 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            margin: 12px 0 7px;
+            font-weight: 600;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccd6e3;
+            border-radius: 7px;
+            font: inherit;
+            background: white;
+        }
+
+        textarea {
+            min-height: 90px;
+        }
+
+        button.primary {
+            background: #183153;
+            color: white;
+            border: 0;
+            padding: 12px 18px;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 850px;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 13px;
+            border-bottom: 1px solid #e5eaf1;
+            font-size: 14px;
+        }
+
+        th {
+            background: #edf3fb;
+            color: #183153;
+        }
+
+        td a {
+            color: #2563eb;
+            text-decoration: none;
+            margin-right: 7px;
+        }
+
+        .empty {
+            text-align: center;
+            color: #64748b;
+        }
+
+        @media (max-width: 650px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+
+            .panel {
+                padding: 17px;
+            }
+
+            nav {
+                gap: 6px;
+                padding: 12px 4%;
+            }
+
+            nav form {
+                margin-left: 0 !important;
+            }
+        }
     </style>
 </head>
 <body>
-<header><h2>Project Task Management System</h2></header>
+
+<header>
+    <h2>Project Task Management System</h2>
+</header>
+
 <nav>
     <a th:href="@{/manager/dashboard}">Dashboard</a>
     <a th:href="@{/teams}">Create Team</a>
     <a th:href="@{/projects}">Projects</a>
     <a th:href="@{/tasks}">Tasks</a>
     <a th:href="@{/team}">Team Members</a>
-    <form th:action="@{/logout}" method="post" style="margin:0">
+
+    <form th:action="@{/logout}" method="post">
         <button type="submit">Logout</button>
     </form>
 </nav>
@@ -44,12 +207,14 @@
 <main>
     <section class="panel">
         <h2>Add Project</h2>
+
         <form th:action="@{/projects/save}" method="post">
             <div class="grid">
                 <div>
                     <label for="name">Project Name</label>
                     <input id="name" name="name" required maxlength="255">
                 </div>
+
                 <div>
                     <label for="status">Status</label>
                     <select id="status" name="status">
@@ -58,14 +223,17 @@
                         <option value="Completed">Completed</option>
                     </select>
                 </div>
+
                 <div class="full">
                     <label for="description">Description</label>
                     <textarea id="description" name="description"></textarea>
                 </div>
+
                 <div>
                     <label for="deadline">Deadline</label>
                     <input id="deadline" name="deadline" type="date">
                 </div>
+
                 <div>
                     <label for="teamId">Assign Team</label>
                     <select id="teamId" name="teamId">
@@ -74,10 +242,12 @@
                                 th:value="${team.id}"
                                 th:text="${team.name}"></option>
                     </select>
+
                     <small th:if="${#lists.isEmpty(teams)}">
                         Create a team first using Create Team.
                     </small>
                 </div>
+
                 <div class="full">
                     <button class="primary" type="submit">Add Project</button>
                 </div>
@@ -87,6 +257,7 @@
 
     <section class="panel">
         <h2>Projects</h2>
+
         <div class="table-wrap">
             <table>
                 <thead>
@@ -100,6 +271,7 @@
                     <th>Actions</th>
                 </tr>
                 </thead>
+
                 <tbody>
                 <tr th:each="p : ${projects}">
                     <td th:text="${p.id}"></td>
@@ -114,13 +286,17 @@
                            onclick="return confirm('Delete this project?');">Delete</a>
                     </td>
                 </tr>
+
                 <tr th:if="${#lists.isEmpty(projects)}">
-                    <td colspan="7" class="empty">No projects have been added yet.</td>
+                    <td colspan="7" class="empty">
+                        No projects have been added yet.
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </section>
 </main>
+
 </body>
 </html>
